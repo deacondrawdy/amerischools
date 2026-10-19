@@ -1,0 +1,68 @@
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+
+/* Design tokens — single source of truth for the AmeriSchools brand. */
+@theme {
+  --font-display: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #0c1f3d;
+  --color-navy-950: #071d3c;
+  --color-navy-900: #0b2d5b;
+  --color-navy-800: #123a70;
+  --color-brand-700: #1650b8;
+  --color-brand-600: #1d63d8;
+  --color-brand-500: #2f7ae5;
+  --color-sky-50: #f0f7fd;
+  --color-sky-100: #e3f0fb;
+  --color-sky-200: #cfe4f7;
+  --color-sun-400: #ffc93c;
+  --color-sun-500: #f5b81c;
+  --color-line: #e2e8f0;
+  --color-muted: #4a5a72;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-ink;
+    letter-spacing: -0.02em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+}
+
+/* Component classes as utilities so they compose with variants and @apply. */
+@utility container-site {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+@utility eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.18em] text-brand-700;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-6 py-3 font-display text-lg font-semibold transition-colors;
+}
+@utility btn-primary {
+  @apply btn bg-sun-400 text-navy-950 hover:bg-sun-500;
+}
+@utility btn-outline {
+  @apply btn border-2 border-brand-600 bg-white text-brand-700 hover:bg-sky-50;
+}
+@utility link-arrow {
+  @apply inline-flex items-center gap-1.5 font-semibold text-brand-700 underline-offset-4 hover:underline;
+}
+@utility card {
+  @apply overflow-hidden rounded-lg border border-line bg-white shadow-sm;
+}

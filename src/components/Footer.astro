@@ -1,0 +1,49 @@
+---
+import { MapPin, Phone } from '@lucide/astro';
+import Logo from './Logo.astro';
+import { site, telHref, type Campus } from '../data/site';
+
+interface Props {
+  /** When set, the footer shows this campus's address and phone (campus pages). */
+  campus?: Campus;
+}
+const { campus } = Astro.props;
+const links = campus
+  ? [
+      { label: 'Current Families', href: site.currentFamiliesUrl },
+      { label: 'Contact', href: '/contact/' },
+      { label: 'Accessibility', href: '/accessibility/' },
+    ]
+  : [
+      { label: 'Current Families', href: site.currentFamiliesUrl },
+      { label: 'District Information', href: '/district-information/' },
+      { label: 'Contact', href: '/contact/' },
+      { label: 'Accessibility', href: '/accessibility/' },
+    ];
+---
+<footer class="bg-navy-900 text-white">
+  <div class="container-site flex flex-col gap-8 py-10 md:flex-row md:items-center md:gap-10">
+    <Logo inverse />
+
+    {campus && (
+      <div class="flex flex-col gap-6 text-sm md:flex-row md:items-center md:gap-10 md:border-l md:border-white/20 md:pl-10">
+        <p class="flex items-start gap-3">
+          <MapPin class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
+          <span>{campus.street}<br />{campus.cityStateZip}</span>
+        </p>
+        <a href={telHref(campus.phone)} class="flex items-center gap-3 text-base hover:underline">
+          <Phone class="h-5 w-5" aria-hidden="true" />{campus.phone}
+        </a>
+      </div>
+    )}
+
+    <nav aria-label="Footer" class="md:ml-auto md:border-l md:border-white/20 md:pl-10">
+      <ul class="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+        {links.map((l) => <li><a href={l.href} class="hover:underline">{l.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+  <p class="border-t border-white/10 py-4 text-center text-xs text-white/70">
+    © {new Date().getFullYear()} {site.name}. Tuition-free public charter schools in Arizona.
+  </p>
+</footer>

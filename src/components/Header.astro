@@ -1,0 +1,72 @@
+---
+import { Menu, X } from '@lucide/astro';
+import Logo from './Logo.astro';
+import { mainNav, site } from '../data/site';
+
+const path = Astro.url.pathname;
+---
+<header class="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
+  <div class="container-site flex h-20 items-center justify-between gap-6">
+    <Logo />
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-8 text-[15px] font-medium text-ink">
+        {mainNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="py-2 hover:text-brand-700"
+              aria-current={path.startsWith(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="hidden items-center gap-4 lg:flex">
+      <a href={site.currentFamiliesUrl} class="text-sm font-medium text-brand-700 hover:underline">Current Families</a>
+      <span class="h-5 w-px bg-line" aria-hidden="true"></span>
+      <a href="/es/" lang="es" hreflang="es" class="text-sm font-medium text-brand-700 hover:underline">Español</a>
+      <a href={site.applyUrl} class="ml-2 rounded-md border-2 border-brand-600 px-5 py-2 font-display text-lg font-semibold text-brand-700 hover:bg-sky-50">
+        Apply
+      </a>
+    </div>
+
+    <button
+      type="button"
+      class="rounded-md p-2 text-navy-900 lg:hidden"
+      aria-controls="mobile-nav"
+      aria-expanded="false"
+      data-menu-toggle
+    >
+      <span class="sr-only">Menu</span>
+      <Menu class="h-7 w-7" data-icon-open aria-hidden="true" />
+      <X class="hidden h-7 w-7" data-icon-close aria-hidden="true" />
+    </button>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Main" class="hidden border-t border-line bg-white lg:hidden">
+    <ul class="container-site flex flex-col py-3 text-lg font-medium">
+      {mainNav.map((item) => (
+        <li><a href={item.href} class="block py-3">{item.label}</a></li>
+      ))}
+      <li><a href={site.currentFamiliesUrl} class="block py-3 text-brand-700">Current Families</a></li>
+      <li><a href="/es/" lang="es" hreflang="es" class="block py-3 text-brand-700">Español</a></li>
+      <li class="py-3"><a href={site.applyUrl} class="btn-primary w-full">Apply</a></li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.getElementById('mobile-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    panel?.classList.toggle('hidden', !open);
+    toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
+    toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+  });
+</script>

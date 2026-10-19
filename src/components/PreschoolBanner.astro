@@ -1,0 +1,13 @@
+---
+import { ArrowRight, Sprout } from '@lucide/astro';
+import { site } from '../data/site';
+---
+<section aria-label="Preschool" class="border-t border-line bg-amber-50/60">
+  <div class="container-site flex flex-wrap items-center gap-x-6 gap-y-2 py-5">
+    <Sprout class="h-9 w-9 text-brand-600" aria-hidden="true" />
+    <p class="font-display text-xl font-semibold text-navy-900">Looking for preschool?</p>
+    <a href={site.preschool.url} class="link-arrow text-sm underline">
+      Explore {site.preschool.name} <ArrowRight class="h-4 w-4" aria-hidden="true" />
+    </a>
+  </div>
+</section>

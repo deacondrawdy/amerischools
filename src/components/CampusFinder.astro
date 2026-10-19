@@ -1,0 +1,59 @@
+---
+import { ArrowRight, ChevronDown } from '@lucide/astro';
+import { campuses, site, gradeLabel } from '../data/site';
+
+const cities = [...new Set(campuses.map((c) => c.city))];
+const grades = Array.from({ length: 9 }, (_, i) => i);
+// Serialized for the client script: city + grade range → campus URL.
+const lookup = campuses.map((c) => ({ city: c.city, range: c.gradeRange, href: `/campuses/${c.slug}/` }));
+---
+<form
+  action="/campuses/"
+  method="get"
+  class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg ring-1 ring-line"
+  data-campus-finder
+  data-lookup={JSON.stringify(lookup)}
+>
+  <h2 class="text-xl font-semibold text-navy-900">Find your school community</h2>
+  <div class="mt-4 grid grid-cols-2 gap-3">
+    <div class="relative">
+      <label for="finder-city" class="sr-only">City</label>
+      <select id="finder-city" name="city" required class="w-full appearance-none rounded-md border border-slate-300 bg-white py-2.5 pr-9 pl-3 text-[15px]">
+        <option value="">City</option>
+        {cities.map((c) => <option value={c}>{c}</option>)}
+      </select>
+      <ChevronDown class="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" aria-hidden="true" />
+    </div>
+    <div class="relative">
+      <label for="finder-grade" class="sr-only">Entering grade</label>
+      <select id="finder-grade" name="grade" class="w-full appearance-none rounded-md border border-slate-300 bg-white py-2.5 pr-9 pl-3 text-[15px]">
+        <option value="">Entering grade</option>
+        {grades.map((g) => <option value={g}>{gradeLabel(g)}</option>)}
+      </select>
+      <ChevronDown class="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2" aria-hidden="true" />
+    </div>
+  </div>
+  <button type="submit" class="btn-primary mt-4 w-full py-2.5 text-base">Find Your Campus</button>
+  <p class="mt-3 text-center text-sm text-brand-700">
+    Ready to apply? <a href={site.applyUrl} class="link-arrow underline">Start here <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
+  </p>
+</form>
+
+<script>
+  type Entry = { city: string; range: [number, number]; href: string };
+  document.querySelectorAll<HTMLFormElement>('[data-campus-finder]').forEach((form) => {
+    const lookup: Entry[] = JSON.parse(form.dataset.lookup ?? '[]');
+    form.addEventListener('submit', (e) => {
+      const data = new FormData(form);
+      const city = String(data.get('city'));
+      const gradeRaw = String(data.get('grade') ?? '');
+      const grade = gradeRaw === '' ? null : Number(gradeRaw);
+      const inCity = lookup.filter((c) => c.city === city);
+      const match = inCity.find((c) => grade === null || (grade >= c.range[0] && grade <= c.range[1])) ?? inCity[0];
+      if (match) {
+        e.preventDefault();
+        window.location.href = match.href;
+      }
+    });
+  });
+</script>

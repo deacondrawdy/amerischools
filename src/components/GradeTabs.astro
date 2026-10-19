@@ -1,0 +1,84 @@
+---
+import { ArrowRight } from '@lucide/astro';
+import ImageSlot from './ImageSlot.astro';
+import { gradeBands, type Campus } from '../data/site';
+
+interface Props {
+  campus: Campus;
+}
+const { campus } = Astro.props;
+const [lo, hi] = campus.gradeRange;
+const bands = gradeBands.filter((b) => b.range[1] >= lo && b.range[0] <= hi);
+const initial = bands.find((b) => b.id === 'elementary') ?? bands[0];
+const id = (band: string, part: 'tab' | 'panel') => `grade-${part}-${band}`;
+---
+<section class="bg-sky-50 py-12" aria-labelledby="school-day-heading">
+  <div class="container-site grid items-center gap-8 lg:grid-cols-2" data-tabs>
+    <div>
+      <p class="eyebrow">Explore your child's next step</p>
+      <h2 id="school-day-heading" class="mt-2 text-3xl font-bold sm:text-4xl">A closer look at the school day.</h2>
+
+      <div role="tablist" aria-label="Grade level" class="mt-5 grid grid-flow-col rounded-md sm:inline-grid bg-white shadow-sm ring-1 ring-line">
+        {bands.map((b) => {
+          const selected = b.id === initial.id;
+          return (
+            <button
+              type="button"
+              role="tab"
+              id={id(b.id, 'tab')}
+              aria-controls={id(b.id, 'panel')}
+              aria-selected={selected ? 'true' : 'false'}
+              tabindex={selected ? 0 : -1}
+              class="relative px-3 py-2.5 text-sm sm:px-6 font-medium text-brand-700 aria-selected:bg-brand-600 aria-selected:text-white"
+            >
+              {b.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {bands.map((b) => (
+        <div role="tabpanel" id={id(b.id, 'panel')} aria-labelledby={id(b.id, 'tab')} hidden={b.id !== initial.id} class="mt-6">
+          <h3 class="text-2xl font-semibold">{b.title}</h3>
+          <p class="mt-2 max-w-md text-muted">{b.body}</p>
+          <a href={`/campuses/${campus.slug}/${b.id}/`} class="link-arrow mt-4 underline">
+            Explore {b.label} Learning <ArrowRight class="h-4 w-4" aria-hidden="true" />
+          </a>
+        </div>
+      ))}
+    </div>
+    <div class="aspect-[16/9] overflow-hidden rounded-lg">
+      <ImageSlot alt={`${campus.name} students working together in class`} />
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      });
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        let next: HTMLButtonElement | undefined;
+        if (step) next = tabs[(i + step + tabs.length) % tabs.length];
+        if (e.key === 'Home') next = tabs[0];
+        if (e.key === 'End') next = tabs[tabs.length - 1];
+        if (next) {
+          e.preventDefault();
+          select(next);
+          next.focus();
+        }
+      });
+    });
+  });
+</script>

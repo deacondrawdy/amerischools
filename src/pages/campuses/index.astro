@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CampusCard from '../../components/CampusCard.astro';
+import { campuses, site } from '../../data/site';
+---
+<BaseLayout
+  title={`Campuses | ${site.name}`}
+  description="Tuition-free AmeriSchools campuses in Phoenix, Tucson, and Yuma, Arizona."
+>
+  <section class="bg-sky-50 py-14">
+    <div class="container-site">
+      <p class="eyebrow">Our campuses</p>
+      <h1 class="mt-2 text-4xl font-bold">Find your AmeriSchools community</h1>
+      <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {campuses.map((c) => <li><CampusCard campus={c} /></li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

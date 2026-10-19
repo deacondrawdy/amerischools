@@ -1,0 +1,30 @@
+---
+// Renders a real photo when `src` is provided; otherwise a branded placeholder
+// so layouts can be reviewed before final photography is delivered.
+interface Props {
+  src?: string;
+  alt: string;
+  class?: string;
+  tone?: 'sky' | 'sand' | 'navy';
+  loading?: 'eager' | 'lazy';
+}
+const { src, alt, class: className = '', tone = 'sky', loading = 'lazy' } = Astro.props;
+const tones = {
+  sky: 'from-sky-200 via-sky-100 to-brand-500/30',
+  sand: 'from-amber-100 via-orange-50 to-sky-100',
+  navy: 'from-navy-800 via-brand-700 to-sky-200',
+};
+---
+{src ? (
+  <img src={src} alt={alt} loading={loading} decoding="async" class:list={['h-full w-full object-cover', className]} />
+) : (
+  <div
+    role="img"
+    aria-label={alt}
+    class:list={['relative flex h-full w-full items-end bg-gradient-to-br', tones[tone], className]}
+  >
+    <span class="m-3 rounded bg-white/80 px-2 py-1 text-[11px] font-medium text-muted" aria-hidden="true">
+      Photo: {alt}
+    </span>
+  </div>
+)}

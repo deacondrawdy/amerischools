@@ -1,0 +1,27 @@
+---
+// TODO: replace the seal with the official AmeriSchools SVG logo file.
+interface Props {
+  inverse?: boolean;
+}
+const { inverse = false } = Astro.props;
+---
+<a href="/" class="flex items-center gap-3" aria-label="AmeriSchools Academy home">
+  <svg viewBox="0 0 64 64" class="h-12 w-12 shrink-0 sm:h-14 sm:w-14" aria-hidden="true">
+    <circle cx="32" cy="32" r="31" fill="#1d63d8" />
+    <circle cx="32" cy="32" r="25" fill="none" stroke="#fff" stroke-width="1.5" />
+    <path
+      d="M32 13l5.6 12.6 13.7 1.3-10.4 9.1 3.1 13.4L32 42.4l-12 7 3.1-13.4-10.4-9.1 13.7-1.3z"
+      fill="#ffc93c"
+      stroke="#f5b81c"
+      stroke-width="1"
+    />
+  </svg>
+  <span
+    class:list={[
+      'font-display text-xl leading-[1.05] font-semibold sm:text-2xl',
+      inverse ? 'text-white' : 'text-navy-900',
+    ]}
+  >
+    AmeriSchools<br />Academy
+  </span>
+</a>
