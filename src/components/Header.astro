@@ -1,25 +1,54 @@
 ---
-import { Menu, X } from '@lucide/astro';
+import { ChevronDown, Menu, X } from '@lucide/astro';
 import Logo from './Logo.astro';
-import { mainNav, site } from '../data/site';
+import { isExternal, mainNav, site } from '../data/site';
 
 const path = Astro.url.pathname;
+const isCurrent = (href: string) => !isExternal(href) && !href.includes('#') && path.startsWith(href);
+const ext = (href: string) => (isExternal(href) ? { target: '_blank', rel: 'noopener' } : {});
 ---
 <header class="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
   <div class="container-site flex h-20 items-center justify-between gap-6">
     <Logo />
 
     <nav aria-label="Main" class="hidden lg:block">
-      <ul class="flex items-center gap-8 text-[15px] font-medium text-ink">
-        {mainNav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class="py-2 hover:text-brand-700"
-              aria-current={path.startsWith(item.href) ? 'page' : undefined}
-            >
-              {item.label}
-            </a>
+      <ul class="flex items-center gap-7 text-[15px] font-medium text-ink">
+        {mainNav.map((item, i) => (
+          <li class="relative">
+            {item.children ? (
+              <>
+                <button
+                  type="button"
+                  class="flex items-center gap-1 py-2 hover:text-brand-700 aria-expanded:text-brand-700"
+                  data-disclosure
+                  aria-expanded="false"
+                  aria-controls={`nav-menu-${i}`}
+                  aria-current={isCurrent(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                  <ChevronDown class="h-4 w-4 transition-transform [[aria-expanded=true]>&]:rotate-180" aria-hidden="true" />
+                </button>
+                <ul
+                  id={`nav-menu-${i}`}
+                  hidden
+                  data-disclosure-panel
+                  class="absolute top-full left-1/2 mt-2 w-60 -translate-x-1/2 rounded-lg border border-line bg-white p-2 shadow-lg"
+                >
+                  {item.children.map((c) => (
+                    <li>
+                      <a href={c.href} {...ext(c.href)} class="block rounded-md px-3 py-2 hover:bg-sky-50 hover:text-brand-700">
+                        {c.label}
+                        {isExternal(c.href) && <span class="sr-only"> (opens in a new tab)</span>}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <a href={item.href} class="py-2 hover:text-brand-700" aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            )}
           </li>
         ))}
       </ul>
@@ -47,11 +76,27 @@ const path = Astro.url.pathname;
     </button>
   </div>
 
-  <nav id="mobile-nav" aria-label="Main" class="hidden border-t border-line bg-white lg:hidden">
+  <nav id="mobile-nav" aria-label="Main" class="hidden max-h-[calc(100vh-5rem)] overflow-y-auto border-t border-line bg-white lg:hidden">
     <ul class="container-site flex flex-col py-3 text-lg font-medium">
-      {mainNav.map((item) => (
-        <li><a href={item.href} class="block py-3">{item.label}</a></li>
-      ))}
+      {mainNav.map((item) =>
+        item.children ? (
+          <li>
+            <details class="group">
+              <summary class="flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
+                {item.label}
+                <ChevronDown class="h-5 w-5 transition-transform group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <ul class="mb-2 border-l-2 border-sky-200 pl-4 text-base">
+                {item.children.map((c) => (
+                  <li><a href={c.href} {...ext(c.href)} class="block py-2">{c.label}</a></li>
+                ))}
+              </ul>
+            </details>
+          </li>
+        ) : (
+          <li><a href={item.href} class="block py-3">{item.label}</a></li>
+        ),
+      )}
       <li><a href={site.currentFamiliesUrl} class="block py-3 text-brand-700">Current Families</a></li>
       <li><a href="/es/" lang="es" hreflang="es" class="block py-3 text-brand-700">Español</a></li>
       <li class="py-3"><a href={site.applyUrl} class="btn-primary w-full">Apply</a></li>
@@ -60,6 +105,8 @@ const path = Astro.url.pathname;
 </header>
 
 <script>
+  import '../scripts/disclosure';
+
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const panel = document.getElementById('mobile-nav');
   toggle?.addEventListener('click', () => {

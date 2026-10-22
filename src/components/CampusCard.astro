@@ -9,8 +9,8 @@ interface Props {
 const { campus } = Astro.props;
 ---
 <article class="card group relative flex flex-col">
-  <div class="aspect-[16/9]">
-    <ImageSlot alt={`Students at the ${campus.name} campus`} />
+  <div class="aspect-[16/9] overflow-hidden">
+    <ImageSlot photo={campus.cardPhoto} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
   </div>
   <div class="p-4">
     <h3 class="text-lg font-semibold">{campus.name}</h3>

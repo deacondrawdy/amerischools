@@ -1,0 +1,18 @@
+---
+// Renders every page migrated from the old site (src/content/pages, excluding _legacy/).
+import { getCollection, render } from 'astro:content';
+import ContentLayout from '../layouts/ContentLayout.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+// Old titles repeat the campus name ("Tucson Campus Calendar"); the breadcrumb already says it.
+const campusPrefix = /^(Phoenix( Camelback)?|Tucson( Campus)?|(North )?Yuma( North| Middle| South)?)\s+/i;
+const title = entry.data.campus ? entry.data.title.replace(campusPrefix, '').replace(/^Campus\s+/i, '') : entry.data.title;
+---
+<ContentLayout title={title} campusSlug={entry.data.campus}>
+  <Content />
+</ContentLayout>

@@ -1,0 +1,546 @@
+{
+  "primary": [
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Campuses",
+      "href": null,
+      "children": [
+        {
+          "label": "Campus Overview",
+          "href": "/campuses/"
+        },
+        {
+          "label": "Phoenix",
+          "href": "/campuses/phoenix/"
+        },
+        {
+          "label": "Tucson",
+          "href": "/campuses/tucson/"
+        },
+        {
+          "label": "Yuma North",
+          "href": "/campuses/yuma-north/"
+        },
+        {
+          "label": "Yuma Middle School",
+          "href": "/campuses/yuma-middle/"
+        }
+      ]
+    },
+    {
+      "label": "Tax Credit",
+      "href": "https://donateamerischools.org/"
+    },
+    {
+      "label": "Info",
+      "href": null,
+      "children": [
+        {
+          "label": "About Us",
+          "href": "/about/"
+        },
+        {
+          "label": "District Information",
+          "href": "/district-information/"
+        },
+        {
+          "label": "Blog",
+          "href": "/"
+        }
+      ]
+    },
+    {
+      "label": "CLEVER",
+      "href": "https://clever.com/"
+    },
+    {
+      "label": "Careers",
+      "href": "/careers/"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact/"
+    },
+    {
+      "label": "1-800-379-9083",
+      "href": "tel:18003799083"
+    },
+    {
+      "label": "Enroll",
+      "href": "/admissions/"
+    }
+  ],
+  "campuses": {
+    "phoenix": [
+      {
+        "label": "About",
+        "href": null,
+        "children": [
+          {
+            "label": "Tours",
+            "href": "/campuses/phoenix/tours/"
+          },
+          {
+            "label": "Staff & Admin",
+            "href": "/campuses/phoenix/staff/"
+          },
+          {
+            "label": "Contact Info",
+            "href": "/campuses/phoenix/contact/"
+          }
+        ]
+      },
+      {
+        "label": "Parent Resources",
+        "href": null,
+        "children": [
+          {
+            "label": "Enroll",
+            "href": "/admissions/"
+          },
+          {
+            "label": "Curriculum",
+            "href": "/campuses/phoenix/curriculum/"
+          },
+          {
+            "label": "Calendar",
+            "href": "/campuses/phoenix/calendar/"
+          },
+          {
+            "label": "Breakfast Menu",
+            "href": "/documents/phoenix/phx-menus.pdf"
+          },
+          {
+            "label": "Lunch Menu",
+            "href": "/documents/phoenix/phx-menus.pdf"
+          },
+          {
+            "label": "Wellness Policy",
+            "href": "/documents/district/amerischools-wellness-policy-1.pdf"
+          },
+          {
+            "label": "Dress Code",
+            "href": "/documents/district/uniform-guide-26-27.pdf"
+          },
+          {
+            "label": "Parent Rights Handbook",
+            "href": "https://www.azed.gov/sites/default/files/2023/08/Parental%20Rights%20Handbook_Public%20Charter%20Schools__2023_Final.pdf"
+          },
+          {
+            "label": "Student Handbook",
+            "href": "/documents/district/amerischools-student-handbook-last-edited-6-16-25.pdf"
+          },
+          {
+            "label": "School Supplies",
+            "href": "/documents/phoenix/phx.pdf"
+          },
+          {
+            "label": "Homework",
+            "href": "https://www.classdojo.com/"
+          }
+        ]
+      },
+      {
+        "label": "Programs",
+        "href": null,
+        "children": [
+          {
+            "label": "Clubs & Sports",
+            "href": "/campuses/phoenix/clubs-and-sports/"
+          },
+          {
+            "label": "Before & After School Programs",
+            "href": "/campuses/phoenix/before-and-after-school/"
+          }
+        ]
+      },
+      {
+        "label": "Portals",
+        "href": null,
+        "children": [
+          {
+            "label": "Powerschool",
+            "href": "https://amerischools.powerschool.com/public/home.html"
+          },
+          {
+            "label": "A-Z Reading",
+            "href": "https://www.readinga-z.com/"
+          },
+          {
+            "label": "Dojo",
+            "href": "http://classdojo.com/"
+          },
+          {
+            "label": "RAZ Kids",
+            "href": "https://www.raz-kids.com/"
+          },
+          {
+            "label": "Parent Square",
+            "href": "http://parentsquare.com/"
+          },
+          {
+            "label": "Khan Academy",
+            "href": "http://khanacademy.org/"
+          }
+        ]
+      },
+      {
+        "label": "School Performance",
+        "href": "https://online.asbcs.az.gov/charterholders/view/404#performance-tab"
+      }
+    ],
+    "tucson": [
+      {
+        "label": "About",
+        "href": null,
+        "children": [
+          {
+            "label": "Tours & Open Houses",
+            "href": "/campuses/tucson/tours/"
+          },
+          {
+            "label": "Staff & Admin",
+            "href": "/campuses/tucson/staff/"
+          },
+          {
+            "label": "Contact Info",
+            "href": "/campuses/tucson/contact/"
+          }
+        ]
+      },
+      {
+        "label": "Parent Resources",
+        "href": null,
+        "children": [
+          {
+            "label": "Enroll",
+            "href": "/admissions/"
+          },
+          {
+            "label": "Curriculum",
+            "href": "/campuses/tucson/curriculum/"
+          },
+          {
+            "label": "Calendar",
+            "href": "/campuses/tucson/calendar/"
+          },
+          {
+            "label": "Breakfast Menu",
+            "href": "/documents/tucson/amerischool-oct-bf-menu.pdf"
+          },
+          {
+            "label": "Lunch Menu",
+            "href": "/documents/tucson/amerischool-oct-lunch-menu-1.pdf"
+          },
+          {
+            "label": "Wellness Policy",
+            "href": "/documents/district/amerischools-wellness-policy-1.pdf"
+          },
+          {
+            "label": "Dress Code",
+            "href": "/documents/district/uniform-guide-26-27.pdf"
+          },
+          {
+            "label": "Student Handbook",
+            "href": "/documents/district/amerischools-student-handbook-last-edited-6-16-25.pdf"
+          },
+          {
+            "label": "Parent Rights Handbook",
+            "href": "https://www.azed.gov/sites/default/files/2023/08/Parental%20Rights%20Handbook_Public%20Charter%20Schools__2023_Final.pdf"
+          },
+          {
+            "label": "Homework",
+            "href": "https://www.classdojo.com/"
+          },
+          {
+            "label": "School Supplies",
+            "href": "/documents/tucson/school-supplies.pdf"
+          }
+        ]
+      },
+      {
+        "label": "Programs",
+        "href": null,
+        "children": [
+          {
+            "label": "Pre-K Capstone Quest Academy, Inc.",
+            "href": "https://capstonequestacademy.com/"
+          },
+          {
+            "label": "Clubs & Sports",
+            "href": "/campuses/tucson/clubs-and-sports/"
+          },
+          {
+            "label": "Before & After School Programs",
+            "href": "/campuses/tucson/before-and-after-school/"
+          }
+        ]
+      },
+      {
+        "label": "Portals",
+        "href": null,
+        "children": [
+          {
+            "label": "Powerschool",
+            "href": "https://amerischools.powerschool.com/public/home.html"
+          },
+          {
+            "label": "A – Z Reading",
+            "href": "https://www.readinga-z.com/"
+          },
+          {
+            "label": "Dojo",
+            "href": "http://classdojo.com/"
+          },
+          {
+            "label": "Parent Square",
+            "href": "http://parentsquare.com/"
+          },
+          {
+            "label": "Khan Academy",
+            "href": "http://khanacademy.org/"
+          }
+        ]
+      },
+      {
+        "label": "School Performance",
+        "href": "https://online.asbcs.az.gov/charterholders/view/404#performance-tab"
+      }
+    ],
+    "yuma-north": [
+      {
+        "label": "About",
+        "href": null,
+        "children": [
+          {
+            "label": "Tours",
+            "href": "/campuses/yuma-north/tours/"
+          },
+          {
+            "label": "Staff & Admin",
+            "href": "/campuses/yuma-north/staff/"
+          },
+          {
+            "label": "Contact Info",
+            "href": "/campuses/yuma-north/contact/"
+          }
+        ]
+      },
+      {
+        "label": "Parent Resources",
+        "href": null,
+        "children": [
+          {
+            "label": "Enroll",
+            "href": "/admissions/"
+          },
+          {
+            "label": "Curriculum",
+            "href": "/campuses/yuma-north/curriculum/"
+          },
+          {
+            "label": "Calendar",
+            "href": "/campuses/yuma-north/calendar/"
+          },
+          {
+            "label": "Breakfast & Lunch menus",
+            "href": null
+          },
+          {
+            "label": "Wellness Policy",
+            "href": "/documents/district/amerischools-wellness-policy-1.pdf"
+          },
+          {
+            "label": "Dress Code",
+            "href": "/documents/district/uniform-guide-26-27.pdf"
+          },
+          {
+            "label": "Student Handbook",
+            "href": "/documents/district/amerischools-student-handbook-last-edited-6-16-25.pdf"
+          },
+          {
+            "label": "Parent Rights Handbook",
+            "href": "https://www.azed.gov/sites/default/files/2023/08/Parental%20Rights%20Handbook_Public%20Charter%20Schools__2023_Final.pdf"
+          },
+          {
+            "label": "Homework",
+            "href": "https://www.classdojo.com/"
+          },
+          {
+            "label": "School Supplies",
+            "href": "/documents/yuma-north/north-supplies.pdf"
+          }
+        ]
+      },
+      {
+        "label": "Programs",
+        "href": null,
+        "children": [
+          {
+            "label": "Pre-K Capstone Quest Academy, Inc.",
+            "href": "https://capstonequestacademy.com/"
+          },
+          {
+            "label": "Clubs & Sports",
+            "href": "/campuses/yuma-north/clubs-and-sports/"
+          },
+          {
+            "label": "Before & After School Programs",
+            "href": "/campuses/yuma-north/before-and-after-school/"
+          }
+        ]
+      },
+      {
+        "label": "Portals",
+        "href": null,
+        "children": [
+          {
+            "label": "Powerschool",
+            "href": "https://amerischools.powerschool.com/public/home.html"
+          },
+          {
+            "label": "A-Z Reading",
+            "href": "https://www.readinga-z.com/"
+          },
+          {
+            "label": "Dojo",
+            "href": "http://classdojo.com/"
+          },
+          {
+            "label": "RAZ Kids",
+            "href": "https://www.raz-kids.com/"
+          },
+          {
+            "label": "Parent Square",
+            "href": "http://parentsquare.com/"
+          },
+          {
+            "label": "Khan Academy",
+            "href": "http://khanacademy.org/"
+          }
+        ]
+      },
+      {
+        "label": "School Performance",
+        "href": "https://online.asbcs.az.gov/charterholders/view/404#performance-tab"
+      }
+    ],
+    "yuma-middle": [
+      {
+        "label": "About",
+        "href": null,
+        "children": [
+          {
+            "label": "Tours & Open Houses",
+            "href": "/campuses/yuma-middle/tours/"
+          },
+          {
+            "label": "Staff & Admin",
+            "href": "/campuses/yuma-middle/staff/"
+          },
+          {
+            "label": "Contact Info",
+            "href": "/campuses/yuma-middle/contact/"
+          }
+        ]
+      },
+      {
+        "label": "Parent Resources",
+        "href": null,
+        "children": [
+          {
+            "label": "Enroll",
+            "href": "/admissions/"
+          },
+          {
+            "label": "Curriculum",
+            "href": "/campuses/yuma-middle/curriculum/"
+          },
+          {
+            "label": "Calendar",
+            "href": "/campuses/yuma-middle/calendar/"
+          },
+          {
+            "label": "Breakfast & Lunch Menus",
+            "href": null
+          },
+          {
+            "label": "Wellness Policy",
+            "href": "/documents/district/amerischools-wellness-policy-1.pdf"
+          },
+          {
+            "label": "Dress Code",
+            "href": "/documents/district/uniform-guide-26-27.pdf"
+          },
+          {
+            "label": "Student Handbook",
+            "href": "/documents/district/amerischools-student-handbook-last-edited-6-16-25.pdf"
+          },
+          {
+            "label": "Parent Rights Handbook",
+            "href": "https://www.azed.gov/sites/default/files/2023/08/Parental%20Rights%20Handbook_Public%20Charter%20Schools__2023_Final.pdf"
+          },
+          {
+            "label": "Homework",
+            "href": "https://www.classdojo.com/"
+          },
+          {
+            "label": "School Supplies",
+            "href": "/documents/yuma-middle/yuma-middle.pdf"
+          }
+        ]
+      },
+      {
+        "label": "Programs",
+        "href": null,
+        "children": [
+          {
+            "label": "Clubs & Sports",
+            "href": "/campuses/yuma-middle/clubs-and-sports/"
+          },
+          {
+            "label": "Before & After School Programs",
+            "href": "/campuses/yuma-middle/before-and-after-school/"
+          }
+        ]
+      },
+      {
+        "label": "Portals",
+        "href": null,
+        "children": [
+          {
+            "label": "Powerschool",
+            "href": "https://amerischools.powerschool.com/public/home.html"
+          },
+          {
+            "label": "A-Z Reading",
+            "href": "https://www.readinga-z.com/"
+          },
+          {
+            "label": "Dojo",
+            "href": "http://classdojo.com/"
+          },
+          {
+            "label": "RAZ Kids",
+            "href": "https://www.raz-kids.com/"
+          },
+          {
+            "label": "Parent Square",
+            "href": "http://parentsquare.com/"
+          },
+          {
+            "label": "Khan Academy",
+            "href": "http://khanacademy.org/"
+          }
+        ]
+      },
+      {
+        "label": "School Performance",
+        "href": "https://online.asbcs.az.gov/charterholders/view/404#performance-tab"
+      }
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 @import "@fontsource-variable/outfit";
 @import "@fontsource-variable/inter";
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* Design tokens — single source of truth for the AmeriSchools brand. */
 @theme {

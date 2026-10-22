@@ -36,6 +36,11 @@ const links = campus
         </a>
       </div>
     )}
+    {!campus && (
+      <a href={`tel:+1${site.phone.replace(/\D/g, '').slice(-10)}`} class="flex items-center gap-3 text-base hover:underline md:border-l md:border-white/20 md:pl-10">
+        <Phone class="h-5 w-5" aria-hidden="true" />{site.phone}
+      </a>
+    )}
 
     <nav aria-label="Footer" class="md:ml-auto md:border-l md:border-white/20 md:pl-10">
       <ul class="flex flex-wrap gap-x-8 gap-y-3 text-sm">

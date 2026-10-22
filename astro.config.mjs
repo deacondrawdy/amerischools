@@ -9,7 +9,6 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [sitemap()],
   vite: {
-    // Cast: @tailwindcss/vite's types target a newer Vite than Astro 5 bundles; runtime is compatible.
-    plugins: [/** @type {any} */ (tailwindcss())],
+    plugins: [tailwindcss()],
   },
 });

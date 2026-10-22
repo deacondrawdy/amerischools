@@ -7,24 +7,25 @@ import CampusFinder from '../components/CampusFinder.astro';
 import CampusCard from '../components/CampusCard.astro';
 import ImageSlot from '../components/ImageSlot.astro';
 import PreschoolBanner from '../components/PreschoolBanner.astro';
-import { campuses } from '../data/site';
+import { campuses, site } from '../data/site';
+import type { PhotoKey } from '../data/photos';
 
 const quickLinks = [
-  { icon: BookOpen, title: 'How we teach', sub: 'Skill-based learning in action', href: '/our-approach/' },
-  { icon: UsersRound, title: 'Meet our educators', sub: 'Caring experts, real impact', href: '/about/teachers/' },
-  { icon: ChartColumn, title: 'School performance', sub: 'How we support student growth', href: '/about/performance/' },
+  { icon: BookOpen, title: 'How we teach', sub: 'Skill-based learning in action', href: site.approachUrl },
+  { icon: UsersRound, title: 'Meet our educators', sub: 'Caring experts, real impact', href: '/campuses/' },
+  { icon: ChartColumn, title: 'School performance', sub: 'How we support student growth', href: site.performanceUrl },
 ];
 
-const pillars = [
-  { n: '01', title: 'Skill-based instruction', body: 'Learning groups respond to developing skills.', alt: 'A student writing at her desk' },
-  { n: '02', title: 'Learning beyond the classroom', body: 'Connect classroom ideas with the wider community.', alt: 'Students building a robotics project' },
-  { n: '03', title: 'Relationships that support learning', body: 'Students, teachers, and families work together.', alt: 'A teacher working one-on-one with a student' },
+const pillars: { n: string; title: string; body: string; photo: PhotoKey }[] = [
+  { n: '01', title: 'Skill-based instruction', body: 'Learning groups respond to developing skills.', photo: 'phoenixBoyWriting' },
+  { n: '02', title: 'Learning beyond the classroom', body: 'Connect classroom ideas with the wider community.', photo: 'phoenixKayaking' },
+  { n: '03', title: 'Relationships that support learning', body: 'Students, teachers, and families work together.', photo: 'teacherHelpingStudents' },
 ];
 
 const visitLinks = [
-  { icon: BookOpen, label: 'Curriculum', href: '/our-approach/curriculum/' },
-  { icon: UsersRound, label: 'Teachers', href: '/about/teachers/' },
-  { icon: MessageCircle, label: 'Family questions', href: '/admissions/faq/' },
+  { icon: BookOpen, label: 'Curriculum', href: site.approachUrl },
+  { icon: UsersRound, label: 'Teachers', href: '/campuses/' },
+  { icon: MessageCircle, label: 'Family questions', href: '/contact/' },
 ];
 ---
 <BaseLayout
@@ -34,9 +35,9 @@ const visitLinks = [
   <!-- Hero -->
   <section class="relative overflow-hidden bg-sky-50">
     <div class="absolute inset-y-0 right-0 hidden w-[62%] lg:block">
-      <ImageSlot alt="Students and a teacher building a model bridge together" tone="navy" loading="eager" />
+      <ImageSlot photo="phoenixGirlsWriting" loading="eager" sizes="(min-width: 1024px) 62vw, 100vw" />
       <div class="absolute inset-0 bg-gradient-to-r from-sky-50 via-sky-50/40 to-transparent"></div>
-      <button type="button" class="absolute bottom-8 left-1/4 flex items-center gap-3 font-display text-lg font-medium text-white drop-shadow">
+      <button type="button" class="absolute right-8 bottom-8 flex items-center gap-3 rounded-full bg-navy-950/70 py-2 pr-5 pl-2 font-display text-lg font-medium text-white backdrop-blur-sm hover:bg-navy-950/85">
         <span class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white"><Play class="h-5 w-5 fill-white" aria-hidden="true" /></span>
         See learning in action
       </button>
@@ -51,6 +52,9 @@ const visitLinks = [
           Skill-based instruction, real-world exploration, and a connected school community.
         </p>
         <div class="mt-6"><CampusFinder /></div>
+        <div class="mt-8 aspect-[4/3] overflow-hidden rounded-lg lg:hidden">
+          <ImageSlot photo="phoenixGirlsWriting" sizes="100vw" />
+        </div>
       </div>
     </div>
   </section>
@@ -84,7 +88,7 @@ const visitLinks = [
       <ul class="mt-8 grid gap-6 text-left md:grid-cols-3">
         {pillars.map((p) => (
           <li class="card">
-            <div class="aspect-[16/9]"><ImageSlot alt={p.alt} /></div>
+            <div class="aspect-[16/9] overflow-hidden"><ImageSlot photo={p.photo} sizes="(min-width: 768px) 33vw, 100vw" /></div>
             <div class="flex gap-4 p-5">
               <span class="border-r border-line pr-4 font-display text-2xl font-semibold text-brand-500" aria-hidden="true">{p.n}</span>
               <div>
@@ -95,7 +99,7 @@ const visitLinks = [
           </li>
         ))}
       </ul>
-      <a href="/our-approach/" class="link-arrow mt-6">Explore the AmeriSchools approach <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
+      <a href={site.approachUrl} class="link-arrow mt-6">Explore the AmeriSchools approach <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
     </div>
   </section>
 
@@ -115,8 +119,8 @@ const visitLinks = [
   <!-- Visit -->
   <section class="bg-sky-50 pb-14" aria-labelledby="visit-heading">
     <div class="container-site grid items-center gap-8 lg:grid-cols-2">
-      <div class="aspect-[16/8] overflow-hidden rounded-lg">
-        <ImageSlot alt="A teacher reading with two students" />
+      <div class="aspect-[64/45] overflow-hidden rounded-lg">
+        <ImageSlot photo="studentsGroup" sizes="(min-width: 1024px) 50vw, 100vw" />
       </div>
       <div>
         <p class="eyebrow">Get to know us</p>

@@ -1,0 +1,67 @@
+---
+// Secondary menu for a campus and its sub-pages, built from that campus's menu on the old site.
+import { ChevronDown } from '@lucide/astro';
+import { campusMenu } from '../data/legacy';
+import { isExternal, type Campus } from '../data/site';
+
+interface Props {
+  campus: Campus;
+}
+const { campus } = Astro.props;
+const groups = campusMenu(campus.slug);
+const ext = (href: string) => (isExternal(href) || href.endsWith('.pdf') ? { target: '_blank', rel: 'noopener' } : {});
+const path = Astro.url.pathname;
+---
+<nav aria-label={`${campus.name} campus`} class="border-b border-line bg-sky-50">
+  <div class="container-site flex flex-wrap items-center gap-x-6 gap-y-1 py-2 text-sm font-medium">
+    <a href={`/campuses/${campus.slug}/`} class="py-2 font-display text-base font-semibold text-navy-900 hover:text-brand-700">
+      {campus.name} campus
+    </a>
+    <ul class="flex flex-wrap items-center gap-x-5">
+      {groups.map((g, i) => (
+        <li class="relative">
+          {g.children?.length ? (
+            <>
+              <button
+                type="button"
+                class="flex items-center gap-1 py-2 text-ink hover:text-brand-700 aria-expanded:text-brand-700"
+                data-disclosure
+                aria-expanded="false"
+                aria-controls={`campus-menu-${i}`}
+              >
+                {g.label}
+                <ChevronDown class="h-4 w-4" aria-hidden="true" />
+              </button>
+              <ul
+                id={`campus-menu-${i}`}
+                hidden
+                data-disclosure-panel
+                class="absolute top-full left-0 z-30 mt-1 w-64 rounded-lg border border-line bg-white p-2 shadow-lg max-sm:fixed max-sm:inset-x-4 max-sm:top-auto max-sm:w-auto"
+              >
+                {g.children.map((c) => (
+                  <li>
+                    <a
+                      href={c.href!}
+                      {...ext(c.href!)}
+                      aria-current={c.href === path ? 'page' : undefined}
+                      class="block rounded-md px-3 py-2 hover:bg-sky-50 hover:text-brand-700 aria-[current=page]:font-semibold aria-[current=page]:text-brand-700"
+                    >
+                      {c.label}
+                      {c.href!.endsWith('.pdf') && <span class="ml-1 text-xs text-muted">PDF</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <a href={g.href!} {...ext(g.href!)} class="block py-2 text-ink hover:text-brand-700">{g.label}</a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  import '../scripts/disclosure';
+</script>

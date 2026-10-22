@@ -1,0 +1,53 @@
+---
+// Layout for pages migrated from the old site (Markdown in src/content/pages).
+import BaseLayout from './BaseLayout.astro';
+import CampusNav from '../components/CampusNav.astro';
+import { campuses, site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  campusSlug?: string;
+}
+const { title, description, campusSlug } = Astro.props;
+const campus = campuses.find((c) => c.slug === campusSlug);
+const crumbs = [
+  { label: 'Home', href: '/' },
+  ...(campus
+    ? [
+        { label: 'Campuses', href: '/campuses/' },
+        { label: campus.name, href: `/campuses/${campus.slug}/` },
+      ]
+    : []),
+];
+---
+<BaseLayout
+  title={`${title} | ${site.name}`}
+  description={description ?? `${title} — ${site.name}, tuition-free K–8 charter schools in Arizona.`}
+  campus={campus}
+>
+  {campus && <CampusNav campus={campus} />}
+  <div class="bg-white">
+    <div class="container-site py-8 lg:py-10">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap gap-2 text-sm text-muted">
+          {crumbs.map((c) => (
+            <>
+              <li><a href={c.href} class="hover:underline">{c.label}</a></li>
+              <li aria-hidden="true">/</li>
+            </>
+          ))}
+          <li aria-current="page" class="text-ink">{title}</li>
+        </ol>
+      </nav>
+      <h1 class="mt-4 text-4xl font-bold sm:text-5xl">{title}</h1>
+    </div>
+  </div>
+  <div class="container-site pb-16">
+    <article
+      class="prose prose-lg max-w-3xl prose-headings:font-display prose-headings:text-ink prose-a:text-brand-700 prose-a:underline-offset-4 prose-strong:text-ink prose-li:my-1"
+    >
+      <slot />
+    </article>
+  </div>
+</BaseLayout>

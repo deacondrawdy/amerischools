@@ -41,14 +41,18 @@ const id = (band: string, part: 'tab' | 'panel') => `grade-${part}-${band}`;
         <div role="tabpanel" id={id(b.id, 'panel')} aria-labelledby={id(b.id, 'tab')} hidden={b.id !== initial.id} class="mt-6">
           <h3 class="text-2xl font-semibold">{b.title}</h3>
           <p class="mt-2 max-w-md text-muted">{b.body}</p>
-          <a href={`/campuses/${campus.slug}/${b.id}/`} class="link-arrow mt-4 underline">
+          <a href={`/campuses/${campus.slug}/curriculum/`} class="link-arrow mt-4 underline">
             Explore {b.label} Learning <ArrowRight class="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
       ))}
     </div>
     <div class="aspect-[16/9] overflow-hidden rounded-lg">
-      <ImageSlot alt={`${campus.name} students working together in class`} />
+      {bands.map((b) => (
+        <div data-band-photo={id(b.id, 'panel')} hidden={b.id !== initial.id} class="h-full">
+          <ImageSlot photo={b.photo} sizes="(min-width: 1024px) 50vw, 100vw" />
+        </div>
+      ))}
     </div>
   </div>
 </section>
@@ -61,8 +65,11 @@ const id = (band: string, part: 'tab' | 'panel') => `grade-${part}-${band}`;
         const on = t === tab;
         t.setAttribute('aria-selected', String(on));
         t.tabIndex = on ? 0 : -1;
-        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        const panelId = t.getAttribute('aria-controls') ?? '';
+        const panel = document.getElementById(panelId);
         if (panel) panel.hidden = !on;
+        const photo = root.querySelector<HTMLElement>(`[data-band-photo="${panelId}"]`);
+        if (photo) photo.hidden = !on;
       });
     };
     tabs.forEach((tab, i) => {

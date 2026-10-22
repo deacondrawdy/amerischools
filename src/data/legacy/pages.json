@@ -1,0 +1,326 @@
+[
+  {
+    "legacy": "/",
+    "to": "/",
+    "file": "src/content/pages/_legacy/home.md",
+    "routed": false
+  },
+  {
+    "legacy": "/about/",
+    "to": "/about/",
+    "file": "src/content/pages/about.md",
+    "routed": true
+  },
+  {
+    "legacy": "/archives/",
+    "to": "/district-information/",
+    "file": "src/content/pages/_legacy/archives.md",
+    "routed": false
+  },
+  {
+    "legacy": "/blog/",
+    "to": "/",
+    "file": "src/content/pages/_legacy/blog.md",
+    "routed": false
+  },
+  {
+    "legacy": "/camelbackinfo/",
+    "to": "/campuses/phoenix/",
+    "file": "src/content/pages/_legacy/camelbackinfo.md",
+    "routed": false
+  },
+  {
+    "legacy": "/campus-overview/",
+    "to": "/campuses/",
+    "file": "src/content/pages/_legacy/campus-overview.md",
+    "routed": false
+  },
+  {
+    "legacy": "/careers/",
+    "to": "/careers/",
+    "file": "src/content/pages/careers.md",
+    "routed": true
+  },
+  {
+    "legacy": "/contact/",
+    "to": "/contact/",
+    "file": "src/content/pages/contact.md",
+    "routed": true
+  },
+  {
+    "legacy": "/district-information/",
+    "to": "/district-information/",
+    "file": "src/content/pages/district-information.md",
+    "routed": true
+  },
+  {
+    "legacy": "/documents/",
+    "to": "/district-information/",
+    "file": "src/content/pages/_legacy/documents.md",
+    "routed": false
+  },
+  {
+    "legacy": "/donate-2/",
+    "to": "https://donateamerischools.org/",
+    "file": "src/content/pages/_legacy/donate-2.md",
+    "routed": false
+  },
+  {
+    "legacy": "/donate/",
+    "to": "https://donateamerischools.org/",
+    "file": "src/content/pages/_legacy/donate.md",
+    "routed": false
+  },
+  {
+    "legacy": "/lunch-menu-2/",
+    "to": "/current-families/",
+    "file": "src/content/pages/_legacy/lunch-menu-2.md",
+    "routed": false
+  },
+  {
+    "legacy": "/lunch-menu/",
+    "to": "/current-families/",
+    "file": "src/content/pages/_legacy/lunch-menu.md",
+    "routed": false
+  },
+  {
+    "legacy": "/now-enrolling-2025-2026-charter-school/",
+    "to": "/admissions/",
+    "file": "src/content/pages/admissions.md",
+    "routed": true
+  },
+  {
+    "legacy": "/now-enrolling-2025-2026-charter-school/student-interest-application/",
+    "to": "/admissions/interest-form/",
+    "file": "src/content/pages/admissions/interest-form.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/",
+    "to": "/campuses/phoenix/",
+    "file": "src/content/pages/_legacy/phoenix-camelback.md",
+    "routed": false
+  },
+  {
+    "legacy": "/phoenix-camelback/calendar/",
+    "to": "/campuses/phoenix/calendar/",
+    "file": "src/content/pages/campuses/phoenix/calendar.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/contact-info/",
+    "to": "/campuses/phoenix/contact/",
+    "file": "src/content/pages/campuses/phoenix/contact.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/parent-resources/curriculum/",
+    "to": "/campuses/phoenix/curriculum/",
+    "file": "src/content/pages/campuses/phoenix/curriculum.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/recreation-and-programs/before-and-after-school-programs/",
+    "to": "/campuses/phoenix/before-and-after-school/",
+    "file": "src/content/pages/campuses/phoenix/before-and-after-school.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/recreation-and-programs/clubs-and-sports/",
+    "to": "/campuses/phoenix/clubs-and-sports/",
+    "file": "src/content/pages/campuses/phoenix/clubs-and-sports.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/staff-and-admin/",
+    "to": "/campuses/phoenix/staff/",
+    "file": "src/content/pages/campuses/phoenix/staff.md",
+    "routed": true
+  },
+  {
+    "legacy": "/phoenix-camelback/tours-and-open-houses/",
+    "to": "/campuses/phoenix/tours/",
+    "file": "src/content/pages/campuses/phoenix/tours.md",
+    "routed": true
+  },
+  {
+    "legacy": "/privacy-policy/",
+    "to": "/privacy-policy/",
+    "file": "src/content/pages/privacy-policy.md",
+    "routed": true
+  },
+  {
+    "legacy": "/programs/",
+    "to": "/campuses/",
+    "file": "src/content/pages/_legacy/programs.md",
+    "routed": false
+  },
+  {
+    "legacy": "/tucson/",
+    "to": "/campuses/tucson/",
+    "file": "src/content/pages/_legacy/tucson.md",
+    "routed": false
+  },
+  {
+    "legacy": "/tucson/calendar/",
+    "to": "/campuses/tucson/calendar/",
+    "file": "src/content/pages/campuses/tucson/calendar.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/contact-info/",
+    "to": "/campuses/tucson/contact/",
+    "file": "src/content/pages/campuses/tucson/contact.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/parent-resources/curriculum/",
+    "to": "/campuses/tucson/curriculum/",
+    "file": "src/content/pages/campuses/tucson/curriculum.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/recreation-and-programs/before-and-after-school-programs/",
+    "to": "/campuses/tucson/before-and-after-school/",
+    "file": "src/content/pages/campuses/tucson/before-and-after-school.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/recreation-and-programs/clubs-and-sports/",
+    "to": "/campuses/tucson/clubs-and-sports/",
+    "file": "src/content/pages/campuses/tucson/clubs-and-sports.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/staff-and-admin/",
+    "to": "/campuses/tucson/staff/",
+    "file": "src/content/pages/campuses/tucson/staff.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucson/tours-and-open-houses/",
+    "to": "/campuses/tucson/tours/",
+    "file": "src/content/pages/campuses/tucson/tours.md",
+    "routed": true
+  },
+  {
+    "legacy": "/tucsoninfo/",
+    "to": "/campuses/tucson/",
+    "file": "src/content/pages/_legacy/tucsoninfo.md",
+    "routed": false
+  },
+  {
+    "legacy": "/yuma-middle-school/",
+    "to": "/campuses/yuma-middle/",
+    "file": "src/content/pages/_legacy/yuma-middle-school.md",
+    "routed": false
+  },
+  {
+    "legacy": "/yuma-middle-school/contact-info/",
+    "to": "/campuses/yuma-middle/contact/",
+    "file": "src/content/pages/campuses/yuma-middle/contact.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-middle-school/staff-and-admin/",
+    "to": "/campuses/yuma-middle/staff/",
+    "file": "src/content/pages/campuses/yuma-middle/staff.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/",
+    "to": "/campuses/yuma-north/",
+    "file": "src/content/pages/_legacy/yuma-north.md",
+    "routed": false
+  },
+  {
+    "legacy": "/yuma-north/calendar/",
+    "to": "/campuses/yuma-north/calendar/",
+    "file": "src/content/pages/campuses/yuma-north/calendar.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/contact-info/",
+    "to": "/campuses/yuma-north/contact/",
+    "file": "src/content/pages/campuses/yuma-north/contact.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/parent-resources/curriculum/",
+    "to": "/campuses/yuma-north/curriculum/",
+    "file": "src/content/pages/campuses/yuma-north/curriculum.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/recreation-and-programs/before-and-after-school-programs/",
+    "to": "/campuses/yuma-north/before-and-after-school/",
+    "file": "src/content/pages/campuses/yuma-north/before-and-after-school.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/recreation-and-programs/clubs-and-sports/",
+    "to": "/campuses/yuma-north/clubs-and-sports/",
+    "file": "src/content/pages/campuses/yuma-north/clubs-and-sports.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/staff-and-admin/",
+    "to": "/campuses/yuma-north/staff/",
+    "file": "src/content/pages/campuses/yuma-north/staff.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-north/tours-and-open-houses/",
+    "to": "/campuses/yuma-north/tours/",
+    "file": "src/content/pages/campuses/yuma-north/tours.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-south/",
+    "to": "/campuses/yuma-middle/",
+    "file": "src/content/pages/_legacy/yuma-south.md",
+    "routed": false
+  },
+  {
+    "legacy": "/yuma-south/calendar/",
+    "to": "/campuses/yuma-middle/calendar/",
+    "file": "src/content/pages/campuses/yuma-middle/calendar.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-south/parent-resources/curriculum/",
+    "to": "/campuses/yuma-middle/curriculum/",
+    "file": "src/content/pages/campuses/yuma-middle/curriculum.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-south/recreation-and-programs/before-and-after-school-programs/",
+    "to": "/campuses/yuma-middle/before-and-after-school/",
+    "file": "src/content/pages/campuses/yuma-middle/before-and-after-school.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-south/recreation-and-programs/clubs-and-sports/",
+    "to": "/campuses/yuma-middle/clubs-and-sports/",
+    "file": "src/content/pages/campuses/yuma-middle/clubs-and-sports.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yuma-south/tours-and-open-houses/",
+    "to": "/campuses/yuma-middle/tours/",
+    "file": "src/content/pages/campuses/yuma-middle/tours.md",
+    "routed": true
+  },
+  {
+    "legacy": "/yumanorthinfo/",
+    "to": "/campuses/yuma-north/",
+    "file": "src/content/pages/_legacy/yumanorthinfo.md",
+    "routed": false
+  },
+  {
+    "legacy": "/yumasouthinfo/",
+    "to": "/campuses/yuma-middle/",
+    "file": "src/content/pages/_legacy/yumasouthinfo.md",
+    "routed": false
+  }
+]

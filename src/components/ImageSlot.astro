@@ -1,22 +1,40 @@
 ---
-// Renders a real photo when `src` is provided; otherwise a branded placeholder
-// so layouts can be reviewed before final photography is delivered.
+// Renders a responsive, optimized photo when one is provided; otherwise a
+// branded placeholder so layouts can be reviewed before photography exists.
+import { Image } from 'astro:assets';
+import { photos, type Photo, type PhotoKey } from '../data/photos';
+
 interface Props {
-  src?: string;
-  alt: string;
+  photo?: PhotoKey;
+  /** Overrides the photo's default alt text, or labels the placeholder. */
+  alt?: string;
   class?: string;
   tone?: 'sky' | 'sand' | 'navy';
   loading?: 'eager' | 'lazy';
+  /** Rendered width hint, e.g. "(min-width: 1024px) 33vw, 100vw". */
+  sizes?: string;
 }
-const { src, alt, class: className = '', tone = 'sky', loading = 'lazy' } = Astro.props;
+const { photo, alt, class: className = '', tone = 'sky', loading = 'lazy', sizes = '100vw' } = Astro.props;
+const p: Photo | undefined = photo ? photos[photo] : undefined;
 const tones = {
   sky: 'from-sky-200 via-sky-100 to-brand-500/30',
   sand: 'from-amber-100 via-orange-50 to-sky-100',
   navy: 'from-navy-800 via-brand-700 to-sky-200',
 };
+// Never upscale: offer standard widths below the original, plus the original itself.
+const widths = p ? [480, 800, 1200, 1600].filter((w) => w < p.src.width).concat(p.src.width) : [];
 ---
-{src ? (
-  <img src={src} alt={alt} loading={loading} decoding="async" class:list={['h-full w-full object-cover', className]} />
+{p ? (
+  <Image
+    src={p.src}
+    alt={alt ?? p.alt}
+    widths={widths}
+    sizes={sizes}
+    loading={loading}
+    fetchpriority={loading === 'eager' ? 'high' : undefined}
+    class:list={['h-full w-full object-cover', className]}
+    style={p.position ? `object-position: ${p.position}` : undefined}
+  />
 ) : (
   <div
     role="img"

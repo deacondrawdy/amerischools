@@ -4,10 +4,14 @@ import {
   GraduationCap, Heart, MapPin, Play, UsersRound,
 } from '@lucide/astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CampusNav from '../../components/CampusNav.astro';
 import GradeTabs from '../../components/GradeTabs.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
 import PreschoolBanner from '../../components/PreschoolBanner.astro';
 import { campuses, directionsHref, site, telHref, type Campus } from '../../data/site';
+import type { PhotoKey } from '../../data/photos';
+import { findCampusLink, mealMenuLinks, salaryDisclosure } from '../../data/legacy';
+import { marked } from 'marked';
 
 export function getStaticPaths() {
   return campuses.map((campus) => ({ params: { slug: campus.slug }, props: { campus } }));
@@ -15,26 +19,58 @@ export function getStaticPaths() {
 
 const { campus } = Astro.props as { campus: Campus };
 const base = `/campuses/${campus.slug}`;
-const legacy = `https://amerischools.org${campus.legacyPath}`;
+const performanceUrl = findCampusLink(campus.slug, /school performance/i) ?? site.performanceUrl;
+const disclosure = salaryDisclosure(campus.slug);
+const disclosureHtml = disclosure ? await marked.parse(disclosure) : null;
 
 const quickLinks = [
   { icon: UsersRound, label: 'Meet our teachers', href: `${base}/staff/` },
-  { icon: FileText, label: 'View school performance', href: `${base}/performance/` },
+  { icon: FileText, label: 'View school performance', href: performanceUrl },
   { icon: BookOpen, label: 'Explore our curriculum', href: `${base}/curriculum/` },
 ];
 
-const highlights = [
-  { title: 'Project-based learning', body: 'Students explore questions and develop solutions.', alt: 'Students in safety glasses building a wooden vehicle' },
-  { title: 'Skill-based instruction', body: "Teaching responds to students' developing skills.", alt: 'A teacher guiding two students through a reading lesson' },
-  { title: 'Kindness in practice', body: 'Respect, responsibility, and care for others.', alt: 'Two students reading together' },
+const highlights: { title: string; body: string; photo: PhotoKey }[] = [
+  { title: 'Project-based learning', body: 'Students explore questions and develop solutions.', photo: 'phoenixBuildingProject' },
+  { title: 'Skill-based instruction', body: "Teaching responds to students' developing skills.", photo: 'phoenixBoyWriting' },
+  { title: 'Kindness in practice', body: 'Respect, responsibility, and care for others.', photo: 'tucsonFoodDrive' },
 ];
 
-// TODO(Sanity): campus-specific answers. Until migrated, these point families to the existing pages.
-const familyInfo = [
-  { icon: CalendarDays, title: 'School hours & calendar', body: `Bell schedule, early-release days, and the ${campus.name} school-year calendar.` },
-  { icon: UsersRound, title: 'Before & after school care', body: 'Supervised care and enrichment programs for working families.' },
-  { icon: Bus, title: 'Transportation & meals', body: 'Drop-off and pick-up procedures, plus breakfast and lunch menus.' },
-  { icon: Heart, title: 'Enrollment & student support', body: 'How to enroll, required documents, and services that help every student succeed.' },
+// Answers come from the campus's migrated pages and documents.
+type FamilyLink = { label: string; href: string };
+const menuLinks: FamilyLink[] = mealMenuLinks(campus.slug);
+const handbook = findCampusLink(campus.slug, /student handbook/i);
+const familyInfo: { icon: typeof CalendarDays; title: string; body: string; links: FamilyLink[] }[] = [
+  {
+    icon: CalendarDays,
+    title: 'School hours & calendar',
+    body: `The ${campus.name} school-year calendar, with holidays and family events.`,
+    links: [{ label: 'Campus calendar', href: `${base}/calendar/` }],
+  },
+  {
+    icon: UsersRound,
+    title: 'Before & after school care',
+    body: 'Supervised care, clubs, and sports for students before and after the school day.',
+    links: [
+      { label: 'Before & after school programs', href: `${base}/before-and-after-school/` },
+      { label: 'Clubs & sports', href: `${base}/clubs-and-sports/` },
+    ],
+  },
+  {
+    icon: Bus,
+    title: 'Transportation & meals',
+    body: 'Breakfast and lunch menus, plus drop-off and pick-up details from the campus office.',
+    links: [...(menuLinks.length ? menuLinks : [{ label: 'Menus for all campuses', href: site.currentFamiliesUrl }]), { label: 'Contact the campus office', href: `${base}/contact/` }],
+  },
+  {
+    icon: Heart,
+    title: 'Enrollment & student support',
+    body: 'How to enroll, the student handbook, and who to contact with questions.',
+    links: [
+      { label: 'Enroll', href: '/admissions/' },
+      ...(handbook ? [{ label: 'Student handbook', href: handbook }] : []),
+      { label: 'Staff & admin', href: `${base}/staff/` },
+    ],
+  },
 ];
 ---
 <BaseLayout
@@ -42,12 +78,14 @@ const familyInfo = [
   description={`Tuition-free ${campus.grades} charter school in ${campus.city}, Arizona. ${campus.intro}`}
   campus={campus}
 >
+  <CampusNav campus={campus} />
+
   <!-- Hero -->
   <section class="relative overflow-hidden bg-white">
     <div class="absolute inset-y-0 right-0 hidden w-[60%] lg:block">
-      <ImageSlot alt={`${campus.name} students and a teacher working on a robotics project`} tone="navy" loading="eager" />
+      <ImageSlot photo={campus.heroPhoto} loading="eager" sizes="(min-width: 1024px) 60vw, 100vw" />
       <div class="absolute inset-0 bg-gradient-to-r from-white via-white/30 to-transparent"></div>
-      <button type="button" class="absolute right-6 bottom-6 flex items-center gap-3 text-sm font-semibold text-white drop-shadow">
+      <button type="button" class="absolute right-6 bottom-6 flex items-center gap-3 rounded-full bg-navy-950/70 py-2 pr-5 pl-2 text-sm font-semibold text-white backdrop-blur-sm hover:bg-navy-950/85">
         <span class="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white"><Play class="h-4 w-4 fill-white" aria-hidden="true" /></span>
         Explore our {campus.name} campus
       </button>
@@ -73,6 +111,9 @@ const familyInfo = [
           <a href={site.applyUrl} class="btn-outline">Apply</a>
         </div>
         <p class="mt-4 text-lg">Questions? Call <a href={telHref(campus.phone)} class="font-semibold text-brand-700 hover:underline">{campus.phone}</a></p>
+        <div class="mt-8 aspect-[4/3] overflow-hidden rounded-lg lg:hidden">
+          <ImageSlot photo={campus.heroPhoto} sizes="100vw" />
+        </div>
       </div>
     </div>
   </section>
@@ -112,11 +153,11 @@ const familyInfo = [
       <ul class="mt-6 grid gap-5 md:grid-cols-3">
         {highlights.map((h) => (
           <li class="card group relative">
-            <div class="aspect-[16/9]"><ImageSlot alt={h.alt} /></div>
+            <div class="aspect-[16/9] overflow-hidden"><ImageSlot photo={h.photo} sizes="(min-width: 768px) 33vw, 100vw" /></div>
             <div class="flex items-center gap-3 p-4">
               <div class="flex-1">
                 <h3 class="text-xl font-semibold">
-                  <a href="/our-approach/" class="after:absolute after:inset-0">{h.title}</a>
+                  <a href={site.approachUrl} class="after:absolute after:inset-0">{h.title}</a>
                 </h3>
                 <p class="mt-1 text-muted">{h.body}</p>
               </div>
@@ -135,7 +176,7 @@ const familyInfo = [
     <div class="container-site">
       <h2 id="family-heading" class="text-3xl font-bold sm:text-4xl">Make school work for your family.</h2>
       <div class="mt-6 grid gap-3 md:grid-cols-2">
-        {familyInfo.map(({ icon: Icon, title, body }) => (
+        {familyInfo.map(({ icon: Icon, title, body, links }) => (
           <details class="group rounded-md border border-line bg-white shadow-sm">
             <summary class="flex cursor-pointer list-none items-center gap-4 px-5 py-3.5 [&::-webkit-details-marker]:hidden">
               <Icon class="h-6 w-6 shrink-0 text-navy-900" aria-hidden="true" />
@@ -144,7 +185,15 @@ const familyInfo = [
             </summary>
             <div class="px-5 pb-4 pl-15 text-muted">
               <p>{body}</p>
-              <a href={legacy} class="link-arrow mt-2 text-sm">More {campus.name} details <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
+              <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+                {links.map((l) => (
+                  <li>
+                    <a href={l.href} class="link-arrow text-sm" {...(l.href.endsWith('.pdf') ? { target: '_blank', rel: 'noopener' } : {})}>
+                      {l.label} <ArrowRight class="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           </details>
         ))}
@@ -155,7 +204,7 @@ const familyInfo = [
   <!-- Visit CTA -->
   <section class="relative overflow-hidden bg-sky-100" aria-labelledby="visit-heading">
     <div class="absolute inset-y-0 right-0 hidden w-1/2 md:block">
-      <ImageSlot alt={`Desert mountains near ${campus.city}`} tone="sand" />
+      <ImageSlot photo="playground" sizes="50vw" />
       <div class="absolute inset-0 bg-gradient-to-r from-sky-100 to-transparent"></div>
     </div>
     <div class="container-site relative py-10">
@@ -170,6 +219,12 @@ const familyInfo = [
       </div>
     </div>
   </section>
+
+  {disclosureHtml && (
+    <section aria-label="Required disclosures" class="border-t border-line bg-slate-50">
+      <div class="container-site prose prose-sm max-w-4xl py-8 text-muted prose-headings:text-base prose-headings:text-ink prose-strong:text-ink" set:html={disclosureHtml} />
+    </section>
+  )}
 
   <PreschoolBanner />
 </BaseLayout>
