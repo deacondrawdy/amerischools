@@ -1,13 +1,32 @@
 ---
+// Capstone Quest Academy (preschool partner) banner. The designed banner is shown on
+// tablet/desktop; on phones its baked-in text would be too small, so a text version shows instead.
+import { Image } from 'astro:assets';
 import { ArrowRight, Sprout } from '@lucide/astro';
+import banner from '../assets/capstone-quest-banner.png';
 import { site } from '../data/site';
+
+const alt = `Looking for preschool? Ages 3–5 in Tucson and Yuma. Explore ${site.preschool.name}.`;
 ---
-<section aria-label="Preschool" class="border-t border-line bg-amber-50/60">
-  <div class="container-site flex flex-wrap items-center gap-x-6 gap-y-2 py-5">
+<section aria-label="Preschool" class="border-t-[5px] border-[#fbc12c] bg-[#fefcf3]">
+  <a href={site.preschool.url} target="_blank" rel="noopener" class="group mx-auto hidden max-w-7xl md:block">
+    <Image
+      src={banner}
+      alt={`${alt} (opens in a new tab)`}
+      widths={[768, 1024, 1280, 1687]}
+      sizes="(min-width: 1280px) 1280px, 100vw"
+      class="h-auto w-full transition-opacity group-hover:opacity-90"
+    />
+  </a>
+  <div class="container-site flex flex-wrap items-center gap-x-4 gap-y-2 py-5 md:hidden">
     <Sprout class="h-9 w-9 text-brand-600" aria-hidden="true" />
-    <p class="font-display text-xl font-semibold text-navy-900">Looking for preschool?</p>
-    <a href={site.preschool.url} class="link-arrow text-sm underline">
+    <div>
+      <p class="font-display text-xl font-semibold text-navy-900">Looking for preschool?</p>
+      <p class="text-sm text-muted">Ages 3–5 · Tucson &amp; Yuma</p>
+    </div>
+    <a href={site.preschool.url} target="_blank" rel="noopener" class="btn-primary w-full bg-brand-600 py-2.5 text-base text-white hover:bg-brand-700">
       Explore {site.preschool.name} <ArrowRight class="h-4 w-4" aria-hidden="true" />
+      <span class="sr-only">(opens in a new tab)</span>
     </a>
   </div>
 </section>

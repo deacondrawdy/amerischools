@@ -6,9 +6,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CampusFinder from '../components/CampusFinder.astro';
 import CampusCard from '../components/CampusCard.astro';
 import ImageSlot from '../components/ImageSlot.astro';
-import PreschoolBanner from '../components/PreschoolBanner.astro';
+import TaxCreditBanner from '../components/TaxCreditBanner.astro';
+import VideoDialog from '../components/VideoDialog.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
 import { campuses, site } from '../data/site';
 import type { PhotoKey } from '../data/photos';
+import { noWidow } from '../lib/text';
+
+// Hero slideshow. The real AmeriSchools photo leads; the two "illustrative" slides are
+// AI-generated placeholders from the mockup asset pack — swap for real photos before launch.
+const heroSlides: PhotoKey[] = [
+  'phoenixGirlsWriting',
+  'illustrativeHeroFourStudents',
+  'illustrativeStudentLaptop',
+  'kinderSlide',
+  'yumaNorthRunning',
+];
 
 const quickLinks = [
   { icon: BookOpen, title: 'How we teach', sub: 'Skill-based learning in action', href: site.approachUrl },
@@ -35,25 +48,32 @@ const visitLinks = [
   <!-- Hero -->
   <section class="relative overflow-hidden bg-sky-50">
     <div class="absolute inset-y-0 right-0 hidden w-[62%] lg:block">
-      <ImageSlot photo="phoenixGirlsWriting" loading="eager" sizes="(min-width: 1024px) 62vw, 100vw" />
-      <div class="absolute inset-0 bg-gradient-to-r from-sky-50 via-sky-50/40 to-transparent"></div>
-      <button type="button" class="absolute right-8 bottom-8 flex items-center gap-3 rounded-full bg-navy-950/70 py-2 pr-5 pl-2 font-display text-lg font-medium text-white backdrop-blur-sm hover:bg-navy-950/85">
-        <span class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white"><Play class="h-5 w-5 fill-white" aria-hidden="true" /></span>
-        See learning in action
-      </button>
+      <HeroCarousel slides={heroSlides} sizes="(min-width: 1024px) 62vw, 100vw" controls="top-right">
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-sky-50 via-sky-50/40 to-transparent"></div>
+        <button type="button" data-video-open="learning-video" aria-haspopup="dialog" class="absolute right-8 bottom-8 z-10 flex items-center gap-3 rounded-full bg-navy-950/70 py-2 pr-5 pl-2 font-display text-lg font-medium text-white backdrop-blur-sm hover:bg-navy-950/85">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white"><Play class="h-5 w-5 fill-white" aria-hidden="true" /></span>
+          See learning in action
+        </button>
+      </HeroCarousel>
     </div>
     <div class="container-site relative py-12 lg:py-16">
-      <div class="max-w-2xl">
+      <div class="max-w-2xl 2xl:max-w-3xl">
         <p class="eyebrow">Tuition-free K–8 charter schools in Arizona</p>
-        <h1 class="mt-3 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-[3.5rem]">
-          Hands-on learning.<br />A <span class="text-brand-600">personal path</span> forward.
+        <h1 class="mt-3 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-[3.5rem] 2xl:text-[4.25rem]">
+          <span class="block">Hands-on learning.</span>
+          <span class="block">A <span class="text-brand-600">personal path</span>&nbsp;forward.</span>
         </h1>
-        <p class="mt-4 text-lg text-muted sm:text-xl">
+        <p class="mt-4 text-lg text-muted sm:text-xl 2xl:text-2xl">
           Skill-based instruction, real-world exploration, and a connected school community.
         </p>
         <div class="mt-6"><CampusFinder /></div>
-        <div class="mt-8 aspect-[4/3] overflow-hidden rounded-lg lg:hidden">
-          <ImageSlot photo="phoenixGirlsWriting" sizes="100vw" />
+        <div class="relative mt-8 aspect-[4/3] overflow-hidden rounded-lg lg:hidden">
+          <HeroCarousel slides={heroSlides} sizes="100vw" controls="top-right">
+          <button type="button" data-video-open="learning-video" aria-haspopup="dialog" class="absolute bottom-4 left-4 z-10 flex items-center gap-2 rounded-full bg-navy-950/70 py-1.5 pr-4 pl-1.5 font-display font-medium text-white backdrop-blur-sm">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full border-2 border-white"><Play class="h-4 w-4 fill-white" aria-hidden="true" /></span>
+            See learning in action
+          </button>
+          </HeroCarousel>
         </div>
       </div>
     </div>
@@ -85,15 +105,15 @@ const visitLinks = [
       <h2 id="approach-heading" class="mt-2 text-3xl font-bold sm:text-4xl">
         An education built around <span class="text-brand-600">growth.</span>
       </h2>
-      <ul class="mt-8 grid gap-6 text-left md:grid-cols-3">
+      <ul class="mt-8 grid gap-6 text-left lg:grid-cols-3">
         {pillars.map((p) => (
-          <li class="card">
-            <div class="aspect-[16/9] overflow-hidden"><ImageSlot photo={p.photo} sizes="(min-width: 768px) 33vw, 100vw" /></div>
+          <li class="card md:max-lg:flex">
+            <div class="aspect-[16/9] overflow-hidden md:max-lg:aspect-auto md:max-lg:w-2/5 md:max-lg:shrink-0"><ImageSlot photo={p.photo} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 40vw, 100vw" /></div>
             <div class="flex gap-4 p-5">
               <span class="border-r border-line pr-4 font-display text-2xl font-semibold text-brand-500" aria-hidden="true">{p.n}</span>
               <div>
-                <h3 class="text-lg font-semibold">{p.title}</h3>
-                <p class="mt-1 text-muted">{p.body}</p>
+                <h3 class="text-lg font-semibold">{noWidow(p.title)}</h3>
+                <p class="mt-1 text-muted">{noWidow(p.body)}</p>
               </div>
             </div>
           </li>
@@ -140,5 +160,12 @@ const visitLinks = [
     </div>
   </section>
 
-  <PreschoolBanner />
+  <TaxCreditBanner />
+
+  <VideoDialog
+    id="learning-video"
+    title="See learning in action at AmeriSchools Academy"
+    src="/videos/learning-in-action.mp4"
+    poster="/videos/learning-in-action-poster.jpg"
+  />
 </BaseLayout>

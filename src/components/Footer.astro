@@ -1,7 +1,7 @@
 ---
 import { MapPin, Phone } from '@lucide/astro';
 import Logo from './Logo.astro';
-import { site, telHref, type Campus } from '../data/site';
+import { campuses, site, telHref, type Campus } from '../data/site';
 
 interface Props {
   /** When set, the footer shows this campus's address and phone (campus pages). */
@@ -37,14 +37,21 @@ const links = campus
       </div>
     )}
     {!campus && (
-      <a href={`tel:+1${site.phone.replace(/\D/g, '').slice(-10)}`} class="flex items-center gap-3 text-base hover:underline md:border-l md:border-white/20 md:pl-10">
-        <Phone class="h-5 w-5" aria-hidden="true" />{site.phone}
-      </a>
+      <ul aria-label="Campus phone numbers" class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm md:border-l md:border-white/20 md:pl-10 2xl:flex 2xl:gap-10">
+        {campuses.map((c) => (
+          <li>
+            <span class="block text-white/70">{c.name}</span>
+            <a href={telHref(c.phone)} class="flex items-center gap-2 text-base font-medium whitespace-nowrap hover:underline">
+              <Phone class="h-4 w-4 shrink-0" aria-hidden="true" />{c.phone}
+            </a>
+          </li>
+        ))}
+      </ul>
     )}
 
     <nav aria-label="Footer" class="md:ml-auto md:border-l md:border-white/20 md:pl-10">
-      <ul class="flex flex-wrap gap-x-8 gap-y-3 text-sm">
-        {links.map((l) => <li><a href={l.href} class="hover:underline">{l.label}</a></li>)}
+      <ul class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
+        {links.map((l) => <li><a href={l.href} class="whitespace-nowrap hover:underline">{l.label}</a></li>)}
       </ul>
     </nav>
   </div>

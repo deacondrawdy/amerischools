@@ -4,6 +4,7 @@ import { ArrowRight, ExternalLink, FileText } from '@lucide/astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { campuses, portals, site } from '../../data/site';
 import { findCampusLink, mealMenuLinks } from '../../data/legacy';
+import { noWidow } from '../../lib/text';
 
 const resourceTypes = [
   { label: 'Calendar', find: (slug: string) => `/campuses/${slug}/calendar/` },
@@ -69,7 +70,7 @@ const campusResources = campuses.map((c) => {
                   <li>
                     <a href={l.href} class="link-arrow text-[15px]" {...(pdf ? { target: '_blank', rel: 'noopener' } : {})}>
                       {pdf ? <FileText class="h-4 w-4" aria-hidden="true" /> : <ArrowRight class="h-4 w-4" aria-hidden="true" />}
-                      {l.label}
+                      {noWidow(l.label)}
                       {pdf && <span class="text-xs font-normal text-muted">PDF</span>}
                     </a>
                   </li>

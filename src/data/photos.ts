@@ -16,12 +16,19 @@ import tucsonStudent from '../assets/photos/tucson-student.jpg';
 import yumaNorthFriends from '../assets/photos/yuma-north-friends.jpg';
 import yumaNorthRunning from '../assets/photos/yuma-north-running.jpg';
 import yumaNorthThumbsUp from '../assets/photos/yuma-north-thumbs-up.jpg';
+// AI-generated illustrative images from the mockup asset pack — not real AmeriSchools
+// students or staff. Placeholders only: replace with real campus photography before launch.
+// Only 612×482 — request a larger export (1600px+ wide) for a sharp hero.
+import illustrativeHeroFourStudents from '../assets/photos/illustrative-hero-four-students.png';
+import illustrativeStudentLaptop from '../assets/photos/illustrative-student-laptop.png';
 
 export interface Photo {
   src: ImageMetadata;
   alt: string;
   /** CSS object-position to keep the subject in frame when cropped. */
   position?: string;
+  /** AI-generated placeholder, not a real AmeriSchools photo. */
+  illustrative?: boolean;
 }
 
 export const photos = {
@@ -40,6 +47,18 @@ export const photos = {
   yumaNorthFriends: { src: yumaNorthFriends, alt: 'Two students giving a thumbs up on the school field' },
   yumaNorthRunning: { src: yumaNorthRunning, alt: 'Students running across the school field' },
   yumaNorthThumbsUp: { src: yumaNorthThumbsUp, alt: 'Two students giving a thumbs up outside' },
+  illustrativeHeroFourStudents: {
+    src: illustrativeHeroFourStudents,
+    alt: 'A teacher and three students building a small wind turbine model together',
+    position: '50% 12%',
+    illustrative: true,
+  },
+  illustrativeStudentLaptop: {
+    src: illustrativeStudentLaptop,
+    alt: 'A smiling student working on a laptop in class',
+    position: '45% 40%',
+    illustrative: true,
+  },
 } satisfies Record<string, Photo>;
 
 export type PhotoKey = keyof typeof photos;

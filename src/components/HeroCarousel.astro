@@ -1,0 +1,126 @@
+---
+// Crossfading hero photo carousel. Rotates every few seconds, pauses on hover/focus,
+// has a visible pause/play control (WCAG 2.2.2) and never auto-rotates for
+// visitors who prefer reduced motion. Put overlays (gradients, buttons) in the slot.
+import { Pause, Play } from '@lucide/astro';
+import ImageSlot from './ImageSlot.astro';
+import { photos, type PhotoKey } from '../data/photos';
+
+interface Props {
+  slides: PhotoKey[];
+  sizes: string;
+  /** Seconds per slide. */
+  interval?: number;
+  class?: string;
+  /** Where the dots + pause control sit. */
+  controls?: 'bottom-left' | 'top-right';
+}
+const { slides, sizes, interval = 6, class: className = '', controls = 'bottom-left' } = Astro.props;
+const controlPos = controls === 'top-right' ? 'top-4 right-4' : 'bottom-4 left-4';
+---
+<div
+  class:list={['relative h-full w-full', className]}
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="Photos from our classrooms"
+  data-carousel
+  data-interval={interval * 1000}
+>
+  {slides.map((key, i) => (
+    <div
+      class="absolute inset-0 transition-opacity duration-1000 ease-in-out motion-reduce:transition-none"
+      style={`opacity: ${i === 0 ? 1 : 0}`}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`${i + 1} of ${slides.length}`}
+      aria-hidden={i === 0 ? undefined : 'true'}
+      data-slide
+    >
+      <ImageSlot photo={key} sizes={sizes} loading={i === 0 ? 'eager' : 'lazy'} alt={photos[key].alt} />
+    </div>
+  ))}
+
+  <slot />
+
+  {slides.length > 1 && (
+    <div class:list={['absolute z-10 flex items-center gap-2 rounded-full bg-navy-950/60 px-2 py-1.5 backdrop-blur-sm', controlPos]}>
+      <button
+        type="button"
+        class="flex h-7 w-7 items-center justify-center rounded-full text-white hover:bg-white/15"
+        data-carousel-toggle
+        aria-label="Pause slideshow"
+      >
+        <Pause class="h-4 w-4" data-icon-pause aria-hidden="true" />
+        <Play class="hidden h-4 w-4" data-icon-play aria-hidden="true" />
+      </button>
+      {slides.map((_, i) => (
+        <button
+          type="button"
+          class="h-2.5 w-2.5 rounded-full bg-white/50 transition-all hover:bg-white aria-[current=true]:w-6 aria-[current=true]:bg-white"
+          aria-label={`Show photo ${i + 1}`}
+          aria-current={i === 0 ? 'true' : 'false'}
+          data-carousel-dot={i}
+        ></button>
+      ))}
+    </div>
+  )}
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-carousel-dot]')];
+    const toggle = root.querySelector<HTMLButtonElement>('[data-carousel-toggle]');
+    if (slides.length < 2) return;
+    const delay = Number(root.dataset.interval) || 6000;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let userPaused = reduced; // reduced-motion visitors start paused
+    let hovering = false;
+    let timer: number | undefined;
+
+    const show = (n: number) => {
+      index = (n + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        s.style.opacity = i === index ? '1' : '0';
+        if (i === index) s.removeAttribute('aria-hidden');
+        else s.setAttribute('aria-hidden', 'true');
+        // Load the next image ahead of its turn.
+        if (i === (index + 1) % slides.length) s.querySelector('img')?.setAttribute('loading', 'eager');
+      });
+      dots.forEach((d, i) => d.setAttribute('aria-current', String(i === index)));
+    };
+    const running = () => !userPaused && !hovering && root.offsetParent !== null && !document.hidden;
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        if (running()) show(index + 1);
+        schedule();
+      }, delay);
+    };
+    const renderToggle = () => {
+      if (!toggle) return;
+      toggle.setAttribute('aria-label', userPaused ? 'Play slideshow' : 'Pause slideshow');
+      toggle.querySelector('[data-icon-pause]')?.classList.toggle('hidden', userPaused);
+      toggle.querySelector('[data-icon-play]')?.classList.toggle('hidden', !userPaused);
+    };
+
+    toggle?.addEventListener('click', () => {
+      userPaused = !userPaused;
+      renderToggle();
+    });
+    dots.forEach((d, i) =>
+      d.addEventListener('click', () => {
+        show(i);
+        schedule(); // full interval on the chosen photo
+      }),
+    );
+    root.addEventListener('mouseenter', () => (hovering = true));
+    root.addEventListener('mouseleave', () => (hovering = false));
+    root.addEventListener('focusin', () => (hovering = true));
+    root.addEventListener('focusout', () => (hovering = false));
+
+    renderToggle();
+    schedule();
+  });
+</script>

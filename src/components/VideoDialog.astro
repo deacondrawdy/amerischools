@@ -1,0 +1,63 @@
+---
+// Modal video player. Open it from any button with data-video-open="<id>".
+// Uses the native <dialog>: focus is trapped, Escape closes, and closing pauses playback.
+import { X } from '@lucide/astro';
+
+interface Props {
+  id: string;
+  src: string;
+  poster?: string;
+  title: string;
+  /** WebVTT captions file; required for accessibility once the final video has one. */
+  captions?: string;
+}
+const { id, src, poster, title, captions } = Astro.props;
+---
+<dialog
+  id={id}
+  aria-label={title}
+  class="m-auto w-[min(64rem,calc(100vw-2rem))] overflow-visible bg-transparent p-0 backdrop:bg-navy-950/80 backdrop:backdrop-blur-sm"
+  data-video-dialog
+>
+  <div class="relative">
+    <button
+      type="button"
+      class="absolute -top-12 right-0 flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-sm font-semibold text-white hover:bg-white/20"
+      data-video-close
+    >
+      <X class="h-5 w-5" aria-hidden="true" /> Close
+    </button>
+    <video
+      class="max-h-[80vh] w-full rounded-lg bg-black shadow-2xl"
+      controls
+      playsinline
+      preload="none"
+      poster={poster}
+    >
+      <source src={src} type="video/mp4" />
+      {captions && <track kind="captions" src={captions} srclang="en" label="English" default />}
+      <a href={src}>Download the video</a>
+    </video>
+  </div>
+</dialog>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-video-open]').forEach((btn) => {
+    const dialog = document.getElementById(btn.dataset.videoOpen ?? '') as HTMLDialogElement | null;
+    if (!dialog) return;
+    const video = dialog.querySelector('video');
+    btn.addEventListener('click', () => {
+      dialog.showModal();
+      video?.play().catch(() => {}); // autoplay may be blocked; controls are still available
+    });
+  });
+  document.querySelectorAll<HTMLDialogElement>('[data-video-dialog]').forEach((dialog) => {
+    const video = dialog.querySelector('video');
+    dialog.addEventListener('close', () => video?.pause());
+    dialog.querySelector('[data-video-close]')?.addEventListener('click', () => dialog.close());
+    // Clicking the dimmed backdrop (the dialog element itself, outside the player) closes it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  });
+</script>

@@ -15,7 +15,7 @@ const lookup = campuses.map((c) => ({ city: c.city, range: c.gradeRange, href: `
   data-lookup={JSON.stringify(lookup)}
 >
   <h2 class="text-xl font-semibold text-navy-900">Find your school community</h2>
-  <div class="mt-4 grid grid-cols-2 gap-3">
+  <div class="mt-4 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
     <div class="relative">
       <label for="finder-city" class="sr-only">City</label>
       <select id="finder-city" name="city" required class="w-full appearance-none rounded-md border border-slate-300 bg-white py-2.5 pr-9 pl-3 text-[15px]">
