@@ -21,6 +21,7 @@ import yumaNorthThumbsUp from '../assets/photos/yuma-north-thumbs-up.jpg';
 // Only 612×482 — request a larger export (1600px+ wide) for a sharp hero.
 import illustrativeHeroFourStudents from '../assets/photos/illustrative-hero-four-students.png';
 import illustrativeStudentLaptop from '../assets/photos/illustrative-student-laptop.png';
+import illustrativeMusicActivity from '../assets/photos/illustrative-music-activity.png';
 
 export interface Photo {
   src: ImageMetadata;
@@ -51,6 +52,12 @@ export const photos = {
     src: illustrativeHeroFourStudents,
     alt: 'A teacher and three students building a small wind turbine model together',
     position: '50% 12%',
+    illustrative: true,
+  },
+  illustrativeMusicActivity: {
+    src: illustrativeMusicActivity,
+    alt: 'A teacher guiding two students playing a keyboard and tambourine',
+    position: '50% 35%',
     illustrative: true,
   },
   illustrativeStudentLaptop: {
