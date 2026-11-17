@@ -77,10 +77,6 @@ District Information
 
 District Wellness Policy
 
-Phoenix Wellness Report Card
-
-Wellness Policy Report – Tucson & Phoenix
-
 Wellness Committee Public Meeting Notice
 
 **BUDGET**
