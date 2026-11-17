@@ -1,0 +1,474 @@
+---
+// Campus curriculum page: hero, focus areas, tabbed teaching approach, well-rounded arts,
+// project-based learning, curriculum toolkit, culture pillars, community marquee, clubs and CTA.
+// Copy lives in src/data/curriculum.ts.
+import {
+  ArrowRight, Award, BookOpen, ChartColumn, CircleCheck, FlaskConical, Globe, GraduationCap, Hammer, Handshake, Heart,
+  Laptop, Layers, Lightbulb, Music, Palette, Presentation, Puzzle, Search, ShieldCheck, Sigma, Star, Trees, UsersRound,
+  Volleyball,
+} from '@lucide/astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CampusNav from '../../../components/CampusNav.astro';
+import ImageSlot from '../../../components/ImageSlot.astro';
+import Reveal from '../../../components/Reveal.astro';
+import { campuses, site, type Campus } from '../../../data/site';
+import { curriculum, type CurriculumIcon, type CurriculumPage } from '../../../data/curriculum';
+import { noWidow } from '../../../lib/text';
+
+export function getStaticPaths() {
+  return campuses
+    .filter((c) => curriculum[c.slug])
+    .map((campus) => ({ params: { slug: campus.slug }, props: { campus, page: curriculum[campus.slug] } }));
+}
+const { campus, page } = Astro.props as { campus: Campus; page: CurriculumPage };
+const base = `/campuses/${campus.slug}`;
+
+const icons: Record<CurriculumIcon, typeof Star> = {
+  math: Sigma, science: FlaskConical, book: BookOpen, music: Music, run: Volleyball, palette: Palette, laptop: Laptop,
+  globe: Globe, handshake: Handshake, shield: ShieldCheck, award: Award, star: Star, users: UsersRound, layers: Layers,
+  puzzle: Puzzle, trees: Trees, search: Search, lightbulb: Lightbulb, hammer: Hammer, presentation: Presentation,
+  chart: ChartColumn, heart: Heart,
+};
+const pad = (n: number) => String(n).padStart(2, '0');
+const { approach, pbl, community } = page;
+---
+<BaseLayout
+  title={`${campus.name} Curriculum | ${site.name}`}
+  description={`Curriculum at AmeriSchools Academy ${campus.name} (${campus.grades}): ${page.lead}`}
+  campus={campus}
+>
+  <Reveal />
+  <CampusNav campus={campus} />
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-white">
+    <div aria-hidden="true" class="blob absolute -top-32 -right-20 h-96 w-96 rounded-full bg-sky-100 blur-3xl"></div>
+    <div class="container-site relative py-6 lg:py-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap gap-2 text-sm text-muted">
+          <li><a href="/" class="hover:underline">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/campuses/" class="hover:underline">Campuses</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={`${base}/`} class="hover:underline">{campus.name}</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-ink">Curriculum</li>
+        </ol>
+      </nav>
+      <div class="grid items-center gap-10 pt-6 pb-10 lg:grid-cols-[5fr_6fr] lg:gap-14 lg:pt-10 lg:pb-16">
+        <div>
+          <p data-reveal class="eyebrow">{campus.name} · Curriculum</p>
+          <h1 data-reveal style="--d:80ms" class="mt-3 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-[3.4rem]">
+            <span class="block">{page.headline[0]}</span>
+            <span class="block text-brand-600">{noWidow(page.headline[1])}</span>
+          </h1>
+          <p data-reveal style="--d:160ms" class="mt-5 text-lg text-muted sm:text-xl">{noWidow(page.lead)}</p>
+          <div data-reveal style="--d:240ms" class="mt-8 flex flex-wrap gap-4">
+            <a href="#approach" class="btn-primary">How We Teach</a>
+            <a href={`${base}/tours/`} class="btn-outline">Schedule a Tour</a>
+          </div>
+        </div>
+        <div data-reveal style="--d:160ms" class="relative">
+          <div class="hero-photo aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+            <ImageSlot photo={page.heroPhoto} loading="eager" sizes="(min-width: 1024px) 55vw, 100vw" />
+          </div>
+          <div class="float-card absolute -bottom-6 left-4 flex items-center gap-3 rounded-xl bg-white px-5 py-4 shadow-lg sm:-left-6">
+            <span class="grid h-11 w-11 place-items-center rounded-full bg-sun-400 text-navy-950">
+              <GraduationCap class="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span class="block font-display text-2xl leading-none font-bold">Grades {campus.grades}</span>
+              <span class="text-sm text-muted">Tuition-free, skill-based</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Areas of focus -->
+  <section class="border-t border-line bg-white py-16 lg:py-20" aria-labelledby="focus-heading">
+    <div class="container-site">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow">Areas of focus</p>
+        <h2 id="focus-heading" class="mt-2 text-3xl font-bold sm:text-4xl">What students learn</h2>
+      </div>
+      <ul class="mx-auto mt-10 flex max-w-6xl flex-wrap justify-center gap-4">
+        {page.academics.map(({ label, icon }, i) => {
+          const Icon = icons[icon];
+          return (
+            <li data-reveal style={`--d:${i * 80}ms`} class="lift subject flex w-[calc(50%-0.5rem)] flex-col items-center gap-3 rounded-2xl border border-line bg-white p-6 text-center shadow-sm sm:w-44 lg:w-48">
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-sky-50 text-brand-600 transition-colors">
+                <Icon class="h-7 w-7" aria-hidden="true" />
+              </span>
+              <span class="font-display text-lg leading-tight font-semibold">{label}</span>
+            </li>
+          );
+        })}
+      </ul>
+      <div class="mt-12 text-center">
+        <h3 class="text-xl font-semibold">Beyond the classroom</h3>
+        <ul class="mx-auto mt-4 flex max-w-4xl flex-wrap justify-center gap-2.5">
+          {page.extracurricular.map((x, i) => (
+            <li data-reveal style={`--d:${i * 50}ms`} class="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-medium text-navy-900 transition-colors hover:border-brand-500 hover:bg-white">
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach: tabs with crossfading panels -->
+  <section id="approach" class="scroll-mt-24 bg-sky-50 py-16 lg:py-24" aria-labelledby="approach-heading" data-tabs>
+    <div class="container-site">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow">{approach.eyebrow}</p>
+        <h2 id="approach-heading" class="mt-2 text-3xl font-bold sm:text-4xl lg:text-5xl">{noWidow(approach.title)}</h2>
+        <p class="mt-4 text-lg text-muted">{noWidow(approach.intro)}</p>
+      </div>
+      <div role="tablist" aria-label={approach.title} class="mx-auto mt-10 flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-full bg-white p-1.5 shadow-sm">
+        {approach.tabs.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`approach-tab-${i}`}
+            aria-controls={`approach-panel-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            class="seg rounded-full px-5 py-2.5 font-display text-base font-semibold text-navy-900 transition-colors sm:px-6"
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <div class="mx-auto mt-8 grid max-w-6xl">
+        {approach.tabs.map((t, i) => (
+          <div
+            role="tabpanel"
+            id={`approach-panel-${i}`}
+            aria-labelledby={`approach-tab-${i}`}
+            class:list={['panel col-start-1 row-start-1 grid overflow-hidden rounded-2xl bg-white shadow-lg md:grid-cols-2', { 'is-active': i === 0 }]}
+          >
+            <div class="panel-photo relative min-h-64 md:min-h-[24rem]">
+              <div class="absolute inset-0"><ImageSlot photo={t.photo} sizes="(min-width: 768px) 50vw, 100vw" /></div>
+            </div>
+            <div class="panel-copy flex flex-col justify-center p-8 lg:p-12">
+              <p class="font-display text-5xl leading-none font-bold text-sun-500">{pad(i + 1)}</p>
+              <h3 class="mt-3 text-2xl font-bold sm:text-3xl">{t.label}</h3>
+              <p class="mt-4 text-lg leading-relaxed text-muted">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {page.wellRounded && (
+    <section class="py-16 lg:py-20" aria-labelledby="rounded-heading">
+      <div class="container-site">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow">Every class, every week</p>
+          <h2 id="rounded-heading" class="mt-2 text-3xl font-bold sm:text-4xl">A well-rounded education</h2>
+        </div>
+        <ul class="campus-grid mt-10">
+          {page.wellRounded.map(({ title, body, icon }, i) => {
+            const Icon = icons[icon];
+            return (
+              <li data-reveal style={`--d:${i * 110}ms`} class="lift relative overflow-hidden rounded-2xl border border-line bg-white p-8 text-center shadow-sm">
+                <span aria-hidden="true" class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-500 to-sun-400"></span>
+                <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-sky-50 text-brand-600">
+                  <Icon class="h-8 w-8" aria-hidden="true" />
+                </span>
+                <h3 class="mt-5 text-xl font-bold">{title}</h3>
+                <p class="mt-2 text-muted">{body}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {pbl && (
+    <section class:list={['py-16 lg:py-24', page.wellRounded ? 'bg-sky-50' : 'bg-white']} aria-labelledby="pbl-heading" data-steps>
+      <div class="container-site">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow">Project Based Learning</p>
+          <h2 id="pbl-heading" class="mt-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Learning is an&nbsp;action.</h2>
+          <p class="mt-4 text-lg text-muted">{noWidow(pbl.intro)}</p>
+        </div>
+
+        {pbl.steps && (
+          <ol class="steps relative mx-auto mt-14 grid max-w-6xl gap-10 md:grid-cols-4 md:gap-6">
+            <span aria-hidden="true" class="absolute top-8 right-[12.5%] left-[12.5%] hidden h-1 rounded-full bg-sky-100 md:block"></span>
+            <span aria-hidden="true" class="steps-fill absolute top-8 left-[12.5%] hidden h-1 rounded-full bg-gradient-to-r from-brand-500 to-sun-400 md:block"></span>
+            {pbl.steps.map((s, i) => {
+              const Icon = icons[s.icon];
+              return (
+                <li data-reveal style={`--d:${i * 140}ms`} class="step relative flex flex-col items-center text-center">
+                  <span class="step-dot relative grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-sky-100 text-brand-700 shadow-md">
+                    <Icon class="h-7 w-7" aria-hidden="true" />
+                    <span class="absolute -top-2 -right-2 grid h-7 w-7 place-items-center rounded-full bg-sun-400 font-display text-xs font-bold text-navy-950">{i + 1}</span>
+                  </span>
+                  <h3 class="mt-5 text-xl font-bold">{s.title}</h3>
+                  <p class="mt-2 max-w-xs text-muted">{s.body}</p>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+
+        {pbl.skills && (
+          <>
+            <p class="mt-12 text-center font-display text-lg font-semibold">Skills students build</p>
+            <ul class="mx-auto mt-5 grid max-w-5xl grid-cols-2 gap-4 lg:grid-cols-4">
+              {pbl.skills.map(({ label, icon }, i) => {
+                const Icon = icons[icon];
+                return (
+                  <li data-reveal style={`--d:${i * 100}ms`} class="lift skill flex flex-col items-center gap-3 rounded-2xl bg-navy-900 p-6 text-center text-white">
+                    <span class="grid h-14 w-14 place-items-center rounded-full bg-white/10 text-sun-400 transition-transform">
+                      <Icon class="h-7 w-7" aria-hidden="true" />
+                    </span>
+                    <span class="font-display text-lg font-semibold">{label}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- Curriculum toolkit -->
+  <section class="border-t border-line bg-white py-16 lg:py-20" aria-labelledby="toolkit-heading">
+    <div class="container-site">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow">Curriculum resources</p>
+        <h2 id="toolkit-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Our teaching toolkit</h2>
+        <p class="mt-4 text-lg text-muted">{noWidow(page.toolkit.intro)}</p>
+      </div>
+      <ul class:list={[
+        'mx-auto mt-10 flex max-w-6xl flex-wrap justify-center gap-5 [&>li]:w-full sm:[&>li]:w-[calc((100%-1.25rem)/2)]',
+        page.toolkit.groups.length === 4 ? 'xl:[&>li]:w-[calc((100%-3.75rem)/4)]' : 'lg:[&>li]:w-[calc((100%-2.5rem)/3)]',
+      ]}>
+        {page.toolkit.groups.map(({ label, icon, items }, i) => {
+          const Icon = icons[icon];
+          return (
+            <li data-reveal style={`--d:${(i % 4) * 100}ms`} class="lift rounded-2xl border border-line bg-white p-6 shadow-sm">
+              <div class="flex items-center gap-3">
+                <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-600 text-white"><Icon class="h-5 w-5" aria-hidden="true" /></span>
+                <h3 class="text-lg font-bold">{label}</h3>
+              </div>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {items.map((it) => <li class="rounded-lg bg-sky-50 px-3 py-1.5 text-sm font-medium text-navy-900">{it}</li>)}
+              </ul>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Pillars -->
+  <section class="relative overflow-hidden bg-navy-900 py-16 text-white lg:py-24" aria-labelledby="pillars-heading">
+    <div aria-hidden="true" class="blob absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-brand-500/25 blur-3xl"></div>
+    <div class="container-site relative">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow text-sun-400!">{page.pillars.eyebrow}</p>
+        <h2 id="pillars-heading" class="mt-2 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">{page.pillars.title}</h2>
+        <p class="mt-4 text-lg text-sky-100">{noWidow(page.pillars.intro)}</p>
+      </div>
+      <ul class="mx-auto mt-12 flex max-w-6xl flex-wrap justify-center gap-5 [&>li]:w-full sm:[&>li]:w-[calc((100%-1.25rem)/2)] lg:[&>li]:flex-1 lg:[&>li]:basis-0">
+        {page.pillars.items.map(({ title, body, icon }, i) => {
+          const Icon = icons[icon];
+          return (
+            <li data-reveal style={`--d:${i * 120}ms`} class="pillar rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+              <span class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-sun-400 text-navy-950 transition-transform">
+                <Icon class="h-8 w-8" aria-hidden="true" />
+              </span>
+              <h3 class="mt-5 text-2xl font-bold text-white">{title}</h3>
+              <p class="mt-2 text-sky-100">{body}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  {community && (
+    <section class="overflow-hidden bg-white py-16 lg:py-20" aria-labelledby="community-heading">
+      <div class="container-site">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow">Community as a laboratory</p>
+          <h2 id="community-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Learning all around {campus.city}</h2>
+          <p class="mt-4 text-lg text-muted">{noWidow(community.intro)}</p>
+        </div>
+      </div>
+      <!-- Screen readers get one plain list; the scrolling copies are decorative. -->
+      <ul class="sr-only">{community.partners.map((p) => <li>{p}</li>)}</ul>
+      <div aria-hidden="true" class="marquee mt-10 space-y-4">
+        {[0, 1].map((row) => {
+          const list = row ? [...community.partners].reverse() : community.partners;
+          return (
+            <div class:list={['marquee-row flex w-max gap-4', { reverse: row === 1 }]}>
+              {[...list, ...list].map((p, j) => (
+                <span class:list={['flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-5 py-3 font-display text-base font-semibold whitespace-nowrap text-navy-900', { dup: j >= list.length }]}>
+                  <Trees class="h-4 w-4 text-brand-600" />{p}
+                </span>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  {page.offerings && (
+    <section class:list={['py-16 lg:py-20', community ? 'bg-sky-50' : 'bg-white']} aria-labelledby="offerings-heading">
+      <div class="container-site">
+        <div class="mx-auto max-w-3xl text-center">
+          <p class="eyebrow">Get involved</p>
+          <h2 id="offerings-heading" class="mt-2 text-3xl font-bold sm:text-4xl">{page.offerings.title}</h2>
+          <p class="mt-4 text-lg text-muted">{page.offerings.intro}</p>
+        </div>
+        <ul class="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-3 [&>li]:w-full sm:[&>li]:w-[calc((100%-0.75rem)/2)] lg:[&>li]:w-[calc((100%-1.5rem)/3)]">
+          {page.offerings.items.map((it, i) => (
+            <li data-reveal style={`--d:${(i % 3) * 70}ms`} class="lift flex items-center gap-3 rounded-xl border border-line bg-white px-5 py-4 shadow-sm">
+              <CircleCheck class="h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+              <span class="font-medium">{it}</span>
+            </li>
+          ))}
+        </ul>
+        {page.offerings.note && <p class="mx-auto mt-6 max-w-3xl text-center text-muted">{noWidow(page.offerings.note)}</p>}
+      </div>
+    </section>
+  )}
+
+  <!-- Goal + CTA -->
+  <section class="relative overflow-hidden bg-brand-700 py-16 text-white lg:py-20" aria-labelledby="cta-heading">
+    <div aria-hidden="true" class="blob absolute -top-20 -right-20 h-72 w-72 rounded-full bg-sun-400/20 blur-3xl"></div>
+    <div class="container-site relative mx-auto max-w-4xl text-center">
+      <h2 data-reveal id="cta-heading" class="text-3xl font-bold text-white sm:text-4xl">{page.goal?.title ?? 'See it in action.'}</h2>
+      <p data-reveal style="--d:100ms" class="mx-auto mt-4 max-w-2xl text-lg text-sky-100 sm:text-xl">
+        {noWidow(page.goal?.body ?? `Tour ${campus.name}, visit a classroom, and meet the teachers who make it happen.`)}
+      </p>
+      <div data-reveal style="--d:200ms" class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href={`${base}/tours/`} class="btn-primary">Schedule a Tour <ArrowRight class="h-5 w-5" aria-hidden="true" /></a>
+        <a href={site.applyUrl} class="btn border-2 border-white text-white hover:bg-white/10">Apply Now</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  @keyframes drift { 50% { transform: translate(1.5rem, -1rem) scale(1.08); } }
+  @keyframes bob { 50% { transform: translateY(-0.4rem); } }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .blob { animation: drift 16s ease-in-out infinite; }
+    .float-card { animation: bob 5s 1.2s ease-in-out infinite; }
+    .hero-photo :global(img) { transition: transform 1.2s ease; }
+    .hero-photo:hover :global(img) { transform: scale(1.04); }
+    .subject:hover span:first-child { background: var(--color-brand-600); color: white; }
+    .pillar:hover > span:first-child, .skill:hover > span:first-child { transform: rotate(-8deg) scale(1.08); }
+    .marquee-row { animation: scroll 45s linear infinite; }
+    .marquee-row.reverse { animation-direction: reverse; animation-duration: 55s; }
+    .marquee:hover .marquee-row { animation-play-state: paused; }
+  }
+  /* Reduced motion: no scrolling, just a wrapped, centered list. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { display: flex; justify-content: center; padding-inline: 1rem; }
+    .marquee-row { flex-wrap: wrap; justify-content: center; width: auto; max-width: 64rem; }
+    .marquee-row.reverse, .marquee-row > .dup { display: none; }
+  }
+  .marquee {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  /* Approach tabs */
+  .seg[aria-selected='true'] { background: var(--color-brand-600); color: white; }
+  .seg[aria-selected='false']:hover { background: var(--color-sky-50); }
+  .panel { opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s; }
+  .panel.is-active { opacity: 1; visibility: visible; }
+  .panel-copy { transition: transform 0.5s 0.1s ease; transform: translateX(1rem); }
+  .panel.is-active .panel-copy { transform: none; }
+  .panel-photo :global(img) { transform: scale(1.06); transition: transform 6s ease-out; }
+  .panel.is-active .panel-photo :global(img) { transform: scale(1); }
+
+  /* PBL steps: the connector fills as the section scrolls (width set by script). */
+  .steps-fill { width: calc(var(--progress, 1) * 75%); }
+  .step-dot { transition: background-color 0.4s, color 0.4s, transform 0.4s; }
+  .step.is-lit .step-dot { background: var(--color-brand-600); color: white; transform: scale(1.06); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel-copy, .panel-photo :global(img) { transform: none !important; transition: none; }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Approach tabs (horizontal, arrow-key navigation).
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const select = (i: number, focus = false) => {
+      const cur = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(j === cur));
+        t.tabIndex = j === cur ? 0 : -1;
+      });
+      panels.forEach((p, j) => {
+        p.classList.toggle('is-active', j === cur);
+        p.toggleAttribute('inert', j !== cur);
+        p.setAttribute('aria-hidden', String(j !== cur));
+      });
+      if (focus) tabs[cur].focus();
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const d = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[e.key];
+        if (d) {
+          e.preventDefault();
+          select(tabs.findIndex((x) => x.getAttribute('aria-selected') === 'true') + d, true);
+        } else if (e.key === 'Home' || e.key === 'End') {
+          e.preventDefault();
+          select(e.key === 'Home' ? 0 : tabs.length - 1, true);
+        }
+      });
+    });
+    select(0);
+  });
+
+  // PBL steps: fill the connector and light each step as the list scrolls into view.
+  const steps = document.querySelector<HTMLElement>('[data-steps] .steps');
+  if (steps) {
+    const items = [...steps.querySelectorAll<HTMLElement>('.step')];
+    if (reduce) {
+      items.forEach((el) => el.classList.add('is-lit'));
+    } else {
+      let queued = false;
+      const paint = () => {
+        queued = false;
+        const r = steps.getBoundingClientRect();
+        // 0 when the list's top reaches 85% of the viewport, 1 by the time it reaches 35%.
+        const p = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (innerHeight * 0.5)));
+        steps.style.setProperty('--progress', String(p));
+        items.forEach((el, i) => el.classList.toggle('is-lit', p >= i / Math.max(1, items.length - 1) - 0.001));
+      };
+      const queue = () => {
+        if (!queued) {
+          queued = true;
+          requestAnimationFrame(paint);
+        }
+      };
+      addEventListener('scroll', queue, { passive: true });
+      addEventListener('resize', queue);
+      paint();
+    }
+  }
+</script>

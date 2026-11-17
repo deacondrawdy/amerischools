@@ -56,6 +56,26 @@
 @utility container-site {
   @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 xl:px-12;
 }
+/* Scroll reveal (see components/Reveal.astro). Reveal animates opacity/transform with a
+   stagger delay; hover effects use translate/shadow/background so they respond instantly. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), translate 0.3s ease,
+      box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    transition-delay: var(--d, 0ms), var(--d, 0ms), 0s, 0s, 0s, 0s;
+  }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .lift:hover {
+    translate: 0 -4px;
+    box-shadow: 0 12px 30px -12px rgb(11 45 91 / 0.25);
+  }
+}
+
 /* One card per campus: up to three per row, and any partial row stays centered. */
 @utility campus-grid {
   @apply mx-auto flex max-w-6xl flex-wrap justify-center gap-5;

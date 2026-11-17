@@ -8,6 +8,7 @@ import {
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
 import HistoryTimeline from '../../components/HistoryTimeline.astro';
+import Reveal from '../../components/Reveal.astro';
 import { faculty, features, intro, mission, pillars, values } from '../../data/about';
 import { foundedYear } from '../../data/history';
 import { campuses, site } from '../../data/site';
@@ -26,8 +27,7 @@ const highlights = ['Tuition-free', 'Grades K–8', `${campuses.length} Arizona 
   title={`About Us | ${site.name}`}
   description="AmeriSchools Academy develops lifelong learners who are compassionate, culturally sensitive, effective and responsible citizens. Tuition-free K–8 charter schools in Arizona since 1997."
 >
-  <!-- Mark JS as available before content paints, so reveal animations start hidden instead of flashing. -->
-  <script is:inline>document.documentElement.classList.add('js');</script>
+  <Reveal />
 
   <!-- Hero -->
   <section class="relative overflow-hidden bg-sky-50">
@@ -256,18 +256,6 @@ const highlights = ['Tuition-free', 'Grades K–8', `${campuses.length} Arizona 
     .hero-photo :global(img) { transition: transform 1.2s ease; }
     .hero-photo:hover :global(img) { transform: scale(1.04); }
 
-    /* Scroll reveals */
-    :global(.js) [data-reveal] {
-      opacity: 0;
-      transform: translateY(1.5rem);
-      /* Reveal uses opacity/transform (staggered); hover effects use translate/shadow/background (instant). */
-      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), translate 0.3s ease,
-        box-shadow 0.3s ease, background-color 0.3s ease;
-      transition-delay: var(--d, 0ms), var(--d, 0ms), 0s, 0s, 0s;
-    }
-    :global(.js) [data-reveal].is-visible { opacity: 1; transform: none; }
-
-    .lift:hover { translate: 0 -4px; box-shadow: 0 12px 30px -12px rgb(11 45 91 / 0.25); }
     .value:hover { background-color: rgb(255 255 255 / 0.1); }
   }
 
@@ -296,20 +284,6 @@ const highlights = ['Tuition-free', 'Grades K–8', `${campuses.length} Arizona 
 
 <script>
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Reveal-on-scroll for any [data-reveal] element.
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { rootMargin: '0px 0px -10% 0px' },
-  );
-  document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
 
   // Mission statement: light each word as the paragraph moves up the screen.
   const mission = document.querySelector<HTMLElement>('[data-mission]');
