@@ -1,0 +1,180 @@
+---
+// Scroll-driven "Our History" timeline: the rail fills as you scroll and each milestone
+// rises into view. Without JS (or with reduced motion) everything simply shows.
+import { ArrowRight, Building2, Flag, MapPin, School, Sprout, Star } from '@lucide/astro';
+import { foundedYear, milestones, type MilestoneIcon } from '../data/history';
+import { campuses } from '../data/site';
+
+const icons: Record<MilestoneIcon, typeof Star> = {
+  star: Star,
+  school: School,
+  map: MapPin,
+  building: Building2,
+  sprout: Sprout,
+};
+const years = new Date().getFullYear() - foundedYear;
+const stats = [
+  { value: String(foundedYear), label: 'Founded in Tucson' },
+  { value: `${years}+`, label: 'Years educating Arizona students' },
+  { value: String(campuses.length), label: 'K–8 campuses today' },
+];
+---
+<section class="history not-prose mt-14" aria-labelledby="history-heading" data-history>
+  <p class="eyebrow">Since {foundedYear}</p>
+  <h2 id="history-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Our History</h2>
+  <p class="mt-4 text-lg text-muted">
+    For more than {years} years, The Charter Foundation has educated Arizona students, and every
+    AmeriSchools Academy campus takes pride in helping K–8 students grow into lifelong learners.
+  </p>
+
+  <dl class="mt-8 grid grid-cols-3 gap-3 sm:gap-4">
+    {stats.map((s) => (
+      <div class="flex flex-col-reverse rounded-lg bg-sky-50 px-3 py-4 text-center sm:px-4">
+        <dt class="mt-1 text-xs text-muted sm:text-sm">{s.label}</dt>
+        <dd class="font-display text-3xl font-bold text-brand-700 sm:text-4xl" data-count={s.value}>{s.value}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <ol class="timeline relative mt-12 space-y-10 pl-14 sm:pl-16">
+    <!-- Rail: a faint track plus a fill that grows with scroll progress. -->
+    <span aria-hidden="true" class="absolute top-2 bottom-2 left-5 w-1 -translate-x-1/2 rounded-full bg-sky-100 sm:left-6"></span>
+    <span aria-hidden="true" class="timeline-fill absolute top-2 left-5 w-1 -translate-x-1/2 rounded-full bg-gradient-to-b from-brand-500 to-sun-400 sm:left-6"></span>
+
+    {milestones.map((m) => {
+      const Icon = icons[m.icon];
+      return (
+        <li class="milestone relative">
+          <span class="dot absolute top-0 -left-14 grid h-10 w-10 place-items-center rounded-full border-4 border-white bg-sky-100 text-brand-700 shadow-sm sm:-left-16 sm:h-12 sm:w-12">
+            <Icon class="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div class="card rounded-lg border border-line bg-white p-5 shadow-sm sm:p-6">
+            <p class="font-display text-3xl leading-none font-bold text-brand-600 sm:text-4xl">{m.year}</p>
+            <h3 class="mt-2 text-xl font-semibold">{m.title}</h3>
+            <p class="mt-2 text-muted">{m.body}</p>
+          </div>
+        </li>
+      );
+    })}
+
+    <li class="milestone relative">
+      <span class="dot absolute top-0 -left-14 grid h-10 w-10 place-items-center rounded-full border-4 border-white bg-sky-100 text-brand-700 shadow-sm sm:-left-16 sm:h-12 sm:w-12">
+        <Flag class="h-5 w-5" aria-hidden="true" />
+      </span>
+      <div class="card rounded-lg bg-navy-900 p-5 text-white shadow-sm sm:p-6">
+        <p class="font-display text-3xl leading-none font-bold text-sun-400 sm:text-4xl">Today</p>
+        <h3 class="mt-2 text-xl font-semibold text-white">{campuses.length} campuses, one community</h3>
+        <p class="mt-2 text-sky-100">
+          The Charter Foundation looks forward to continuing to provide excellent exploration, inquiry and learning
+          to students at every campus.
+        </p>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {campuses.map((c) => (
+            <li>
+              <a
+                href={`/campuses/${c.slug}/`}
+                class="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-sm font-medium text-white hover:bg-white/20"
+              >
+                {c.name} <span class="text-sky-200">· {c.grades}</span>
+                <ArrowRight class="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<style>
+  .timeline-fill {
+    height: calc(var(--progress, 1) * (100% - 1rem));
+  }
+  .dot {
+    transition: background-color 0.4s, color 0.4s, transform 0.4s;
+  }
+  .milestone.is-active .dot {
+    background-color: var(--color-brand-600);
+    color: white;
+    transform: scale(1.08);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .history .milestone .card {
+      opacity: 0;
+      transform: translateY(1.5rem);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    :global(.js) .history .milestone.is-visible .card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-history]');
+  if (root) {
+    document.documentElement.classList.add('js');
+    const list = root.querySelector<HTMLElement>('.timeline')!;
+    const items = [...root.querySelectorAll<HTMLElement>('.milestone')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Reveal each milestone once it scrolls into view.
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -15% 0px' },
+    );
+    items.forEach((el) => io.observe(el));
+
+    // Fill the rail up to the middle of the viewport and light up the dots it has passed.
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = list.getBoundingClientRect();
+      const mid = innerHeight * 0.6;
+      const progress = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+      list.style.setProperty('--progress', String(progress));
+      for (const el of items) el.classList.toggle('is-active', el.getBoundingClientRect().top < mid);
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    update();
+
+    // Count the stats up the first time they appear.
+    if (!reduce) {
+      const counters = [...root.querySelectorAll<HTMLElement>('[data-count]')];
+      const co = new IntersectionObserver((entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          co.unobserve(e.target);
+          const el = e.target as HTMLElement;
+          const target = parseInt(el.dataset.count!, 10);
+          const suffix = el.dataset.count!.replace(/^\d+/, '');
+          const from = target > 1000 ? target - 30 : 0;
+          const start = performance.now();
+          const step = (t: number) => {
+            const k = Math.min(1, (t - start) / 1200);
+            const eased = 1 - Math.pow(1 - k, 3);
+            el.textContent = `${Math.round(from + (target - from) * eased)}${suffix}`;
+            if (k < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      });
+      counters.forEach((el) => co.observe(el));
+    }
+  }
+</script>

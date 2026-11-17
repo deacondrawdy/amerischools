@@ -2,6 +2,7 @@
 import { MapPin, Phone } from '@lucide/astro';
 import Logo from './Logo.astro';
 import { campuses, site, telHref, type Campus } from '../data/site';
+import { meetingNotice as m, teacherSalary as t } from '../data/notices';
 
 interface Props {
   /** When set, the footer shows this campus's address and phone (campus pages). */
@@ -55,6 +56,30 @@ const links = campus
       </ul>
     </nav>
   </div>
+  <section aria-labelledby="public-notices-heading" class="border-t border-white/10">
+    <div class="container-site grid gap-6 py-8 text-sm leading-relaxed text-white/80 lg:grid-cols-[3fr_2fr] lg:gap-12">
+      <h2 id="public-notices-heading" class="sr-only">Public notices</h2>
+      <div>
+        <h3 class="font-sans text-xs font-semibold tracking-[0.14em] text-white uppercase">Meeting notice policy</h3>
+        <p class="mt-2">
+          Pursuant to {m.statute}, {m.board} hereby states that all notices of the meetings of {m.board} will be
+          posted at {m.postingLocation} and on our website
+          (<a href={m.websiteHref} class="underline underline-offset-2 hover:text-white">{m.websiteLabel}</a>).
+          The location is open to the public {m.publicHours}. Such notices will indicate the date, time and place of
+          the meeting and will include an agenda or information concerning the manner in which the public may obtain
+          an agenda for the meeting.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-sans text-xs font-semibold tracking-[0.14em] text-white uppercase">Average teacher salary ({t.statute})</h3>
+        <ul class="mt-2 space-y-1">
+          <li>Average salary of all teachers employed in the budget year {t.budgetYear}: {t.budgetYearAverage}</li>
+          <li>Average salary of all teachers employed in the prior year {t.priorYear}: {t.priorYearAverage}</li>
+          <li>Increase in average teacher salary from the prior year {t.priorYear} {t.increase}. Percentage increase: {t.percentIncrease}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
   <p class="border-t border-white/10 py-4 text-center text-xs text-white/70">
     © {new Date().getFullYear()} {site.name}. Tuition-free public charter schools in Arizona.
   </p>

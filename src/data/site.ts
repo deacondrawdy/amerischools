@@ -23,6 +23,8 @@ export interface Campus {
   heroPhoto: PhotoKey;
   /** Card photo on the homepage and campus index. */
   cardPhoto: PhotoKey;
+  /** Photo beside "Come see the difference for yourself" (defaults to the playground). */
+  visitPhoto?: PhotoKey;
 }
 
 export const site = {
@@ -50,7 +52,6 @@ export const mainNav: NavItem[] = [
     href: '/campuses/',
     children: [
       { label: 'Campus Overview', href: '/campuses/' },
-      { label: 'Phoenix', href: '/campuses/phoenix/' },
       { label: 'Tucson', href: '/campuses/tucson/' },
       { label: 'Yuma North', href: '/campuses/yuma-north/' },
       { label: 'Yuma Middle', href: '/campuses/yuma-middle/' },
@@ -94,21 +95,6 @@ export const isExternal = (href: string) => /^https?:\/\//.test(href);
 
 export const campuses: Campus[] = [
   {
-    slug: 'phoenix',
-    name: 'Phoenix',
-    city: 'Phoenix',
-    grades: 'K–8',
-    gradeRange: [0, 8],
-    street: '1333 W Camelback Road',
-    cityStateZip: 'Phoenix, AZ 85013',
-    phone: '602.532.0100',
-    headline: ['Learning by doing.', 'Growing with purpose.'],
-    intro: 'Hands-on projects, skill-based instruction, and a community that practices kindness.',
-    legacyPath: '/phoenix/',
-    heroPhoto: 'phoenixGirlsWriting',
-    cardPhoto: 'phoenixHandRaised',
-  },
-  {
     slug: 'tucson',
     name: 'Tucson',
     city: 'Tucson',
@@ -122,6 +108,7 @@ export const campuses: Campus[] = [
     legacyPath: '/tucson/',
     heroPhoto: 'classroomHandsUp',
     cardPhoto: 'classroomHandsUp',
+    visitPhoto: 'illustrativePreschoolBlocks',
   },
   {
     // TODO: confirm grades — mockup says K–5, live site says K–8.

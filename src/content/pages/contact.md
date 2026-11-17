@@ -5,7 +5,7 @@ section: "district"
 modified: "2026-07-23"
 ---
 
-AmeriSchools Academy™ is an unsurpassed tuition-free, exceptional learning community of professionals dedicated to providing a clear choice in education for children in grades K-8, with highly-experienced/qualified teachers and administrators as part of our program. Contact one of our four campuses today!
+AmeriSchools Academy™ is an unsurpassed tuition-free, exceptional learning community of professionals dedicated to providing a clear choice in education for children in grades K-8, with highly-experienced/qualified teachers and administrators as part of our program. Contact one of our three campuses today!
 
 we would love to hear from you!
 
@@ -14,14 +14,6 @@ We’d love to hear from you and for you to be a part of our AmeriSchools Academ
 To reach a specific campus, see the contact list below. For inquiries or general questions, please fill out the form below and we will be in touch with you as soon as possible.
 
 ## 1-800-379-9083
-
-PHOENIX
-
-1333 West Camelback Road  
-Phoenix, AZ 85013  
-Phone: [602.532.0100](tel:602-532-0100)  
-Fax: [602.532.9964](fax:602-532-9964)  
-[Contact](/campuses/phoenix/contact/)
 
 TUCSON
 

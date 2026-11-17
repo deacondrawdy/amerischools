@@ -1,0 +1,168 @@
+---
+import {
+  ArrowRight, Award, BadgeDollarSign, CircleCheck, ExternalLink, GraduationCap, HeartPulse, House,
+  Lightbulb, MapPin, Phone, PiggyBank, School, Sprout, UsersRound,
+} from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import { campuses, site, telHref } from '../../data/site';
+import { noWidow } from '../../lib/text';
+
+// Copy adapted from the old /careers/ page. Openings link to Google Jobs listings per city,
+// as the old site did, until the client picks a job board or application form.
+const jobSearch = (city: string) =>
+  `https://www.google.com/search?q=${encodeURIComponent(`AmeriSchools Academy jobs ${city}`)}&ibp=htl;jobs`;
+
+const highlights = [
+  { icon: School, label: 'Three campuses across Arizona' },
+  { icon: GraduationCap, label: 'Grades K–8' },
+  { icon: UsersRound, label: 'Small school and class sizes' },
+  { icon: Sprout, label: 'Mentoring and embedded planning time' },
+];
+
+const benefits = [
+  { icon: UsersRound, title: 'Small class sizes', body: 'Get to know every student and teach to where they are.' },
+  { icon: HeartPulse, title: 'Insurance benefits', body: 'Coverage that helps you and your family stay well.' },
+  { icon: Lightbulb, title: 'Creativity in teaching', body: 'Room to design engaging, hands-on lessons.' },
+  { icon: GraduationCap, title: 'Tuition reimbursement', body: 'Support for continuing your own education.' },
+  { icon: BadgeDollarSign, title: 'Extra income incentives', body: 'Opportunities to earn beyond your base pay.' },
+  { icon: House, title: 'Family work environment', body: 'A close-knit staff that looks out for one another.' },
+  { icon: PiggyBank, title: 'Retirement contributions', body: 'Help building savings for the years ahead.' },
+];
+
+const requirements = [
+  'A current, valid fingerprint clearance card',
+  "A bachelor's degree",
+  'A passing score on the AEPA or NES',
+  "A love of children and the drive to meet each child's academic needs",
+  'The ability to create engaging lessons',
+];
+---
+<BaseLayout
+  title={`Careers | ${site.name}`}
+  description="Teach at AmeriSchools Academy: small class sizes, mentoring, insurance, retirement contributions, and tuition reimbursement at three K–8 charter schools in Arizona."
+>
+  <!-- Hero -->
+  <section class="bg-sky-50">
+    <div class="container-site py-6 lg:py-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex gap-2 text-sm text-muted">
+          <li><a href="/" class="hover:underline">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/about/" class="hover:underline">About</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-ink">Careers</li>
+        </ol>
+      </nav>
+      <div class="grid items-center gap-8 pt-6 pb-6 lg:grid-cols-[5fr_6fr] lg:gap-12 lg:pt-8">
+        <div>
+          <p class="eyebrow">Careers at AmeriSchools</p>
+          <h1 class="mt-3 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-[3.4rem]">
+            <span class="block">Teach where every</span>
+            <span class="block text-brand-600">student is&nbsp;known.</span>
+          </h1>
+          <p class="mt-4 text-lg text-muted sm:text-xl">
+            {noWidow('Small classes, creative freedom, and a staff that feels like family. We are always looking for motivated teachers to join our three campuses.')}
+          </p>
+          <div class="mt-6 flex flex-wrap gap-4">
+            <a href="#openings" class="btn-primary">See Open Positions</a>
+            <a href="#benefits" class="btn-outline">Why Teach Here</a>
+          </div>
+        </div>
+        <div class="aspect-[3/2] overflow-hidden rounded-lg shadow-sm">
+          <ImageSlot photo="teacherPortrait" loading="eager" sizes="(min-width: 1024px) 55vw, 100vw" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights strip -->
+  <div class="bg-navy-900 text-white">
+    <ul class="container-site grid gap-3 py-4 text-[15px] sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      {highlights.map(({ icon: Icon, label }) => (
+        <li class="flex items-center gap-3"><Icon class="h-6 w-6 shrink-0 text-sun-400" aria-hidden="true" />{label}</li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- Benefits -->
+  <section id="benefits" class="scroll-mt-24 py-14" aria-labelledby="benefits-heading">
+    <div class="container-site">
+      <div class="text-center">
+        <p class="eyebrow">Why work for AmeriSchools</p>
+        <h2 id="benefits-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Enjoy the <span class="text-brand-600">benefits.</span></h2>
+      </div>
+      <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {benefits.map(({ icon: Icon, title, body }) => (
+          <li class="card p-6">
+            <span class="flex h-12 w-12 items-center justify-center rounded-full bg-sky-50 text-brand-600">
+              <Icon class="h-6 w-6" aria-hidden="true" />
+            </span>
+            <h3 class="mt-4 text-lg font-semibold">{noWidow(title)}</h3>
+            <p class="mt-1 text-muted">{noWidow(body)}</p>
+          </li>
+        ))}
+        <li class="card overflow-hidden" aria-hidden="true">
+          <div class="h-full min-h-48"><ImageSlot photo="teacherStudentsCourt" sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" /></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Who we're looking for -->
+  <section class="bg-sky-50 py-14" aria-labelledby="looking-heading">
+    <div class="container-site grid items-center gap-8 lg:grid-cols-[2fr_3fr] lg:gap-12">
+      <div class="aspect-[430/257] overflow-hidden rounded-lg">
+        <ImageSlot photo="teacherClassroomDiscussion" sizes="(min-width: 1024px) 40vw, 100vw" />
+      </div>
+      <div>
+        <p class="eyebrow">Work with us</p>
+        <h2 id="looking-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Who we're looking for</h2>
+        <p class="mt-3 text-lg text-muted">
+          {noWidow('Our small school and class sizes allow for responsive teaching using best practices, with embedded professional time and mentoring. Teaching candidates need:')}
+        </p>
+        <ul class="mt-5 grid gap-3">
+          {requirements.map((r) => (
+            <li class="flex items-start gap-3">
+              <CircleCheck class="mt-0.5 h-5 w-5 shrink-0 text-brand-600" aria-hidden="true" />
+              <span>{noWidow(r)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Openings -->
+  <section id="openings" class="scroll-mt-24 py-14" aria-labelledby="openings-heading">
+    <div class="container-site">
+      <div class="text-center">
+        <p class="eyebrow">Open positions</p>
+        <h2 id="openings-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Find openings near&nbsp;you</h2>
+        <p class="mx-auto mt-3 max-w-3xl text-lg text-muted">
+          {noWidow('Choose a campus to see current listings. Questions about a position? Call the campus office.')}
+        </p>
+      </div>
+      <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {campuses.map((c) => (
+          <li class="card flex flex-col p-6">
+            <Award class="h-8 w-8 text-brand-600" aria-hidden="true" />
+            <h3 class="mt-3 text-xl font-semibold">{c.name}</h3>
+            <p class="mt-1 text-sm text-muted">Grades {c.grades}</p>
+            <p class="mt-3 flex items-start gap-2 text-sm"><MapPin class="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />{c.street}, {c.cityStateZip}</p>
+            <a href={telHref(c.phone)} class="mt-2 flex items-center gap-2 text-sm font-medium hover:underline">
+              <Phone class="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />{c.phone}
+            </a>
+            <span class="mt-auto pt-5"></span>
+            <a href={jobSearch(c.city)} target="_blank" rel="noopener" class="btn-primary justify-center py-2 text-base">
+              View Openings <ExternalLink class="h-4 w-4" aria-hidden="true" /><span class="sr-only">(opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-8 text-center">
+        <a href="/campuses/" class="link-arrow">Learn about our campuses <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

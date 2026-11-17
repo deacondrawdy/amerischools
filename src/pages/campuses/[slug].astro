@@ -10,8 +10,7 @@ import ImageSlot from '../../components/ImageSlot.astro';
 import TaxCreditBanner from '../../components/TaxCreditBanner.astro';
 import { campuses, directionsHref, site, telHref, type Campus } from '../../data/site';
 import type { PhotoKey } from '../../data/photos';
-import { findCampusLink, mealMenuLinks, salaryDisclosure } from '../../data/legacy';
-import { marked } from 'marked';
+import { findCampusLink, mealMenuLinks } from '../../data/legacy';
 import { noWidow } from '../../lib/text';
 
 export function getStaticPaths() {
@@ -21,8 +20,6 @@ export function getStaticPaths() {
 const { campus } = Astro.props as { campus: Campus };
 const base = `/campuses/${campus.slug}`;
 const performanceUrl = findCampusLink(campus.slug, /school performance/i) ?? site.performanceUrl;
-const disclosure = salaryDisclosure(campus.slug);
-const disclosureHtml = disclosure ? await marked.parse(disclosure) : null;
 
 const quickLinks = [
   { icon: UsersRound, label: 'Meet our teachers', href: `${base}/staff/` },
@@ -206,7 +203,7 @@ const familyInfo: { icon: typeof CalendarDays; title: string; body: string; link
   <!-- Visit CTA -->
   <section class="relative overflow-hidden bg-sky-100" aria-labelledby="visit-heading">
     <div class="absolute inset-y-0 right-0 hidden w-1/2 md:block">
-      <ImageSlot photo="playground" sizes="50vw" />
+      <ImageSlot photo={campus.visitPhoto ?? 'playground'} sizes="50vw" />
       <div class="absolute inset-0 bg-gradient-to-r from-sky-100 to-transparent"></div>
     </div>
     <div class="container-site relative py-10">
@@ -221,14 +218,6 @@ const familyInfo: { icon: typeof CalendarDays; title: string; body: string; link
       </div>
     </div>
   </section>
-
-  {disclosureHtml && (
-    <section aria-label="Required disclosures" class="border-t border-line bg-slate-50">
-      <div class="container-site py-8">
-        <div class="prose prose-sm max-w-4xl text-muted prose-headings:text-base prose-headings:text-ink prose-strong:text-ink" set:html={disclosureHtml} />
-      </div>
-    </section>
-  )}
 
   <TaxCreditBanner />
 </BaseLayout>

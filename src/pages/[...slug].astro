@@ -4,7 +4,11 @@ import { getCollection, render } from 'astro:content';
 import ContentLayout from '../layouts/ContentLayout.astro';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  // Pages rebuilt by hand under src/pages take over their migrated Markdown.
+  const handBuilt = new Set(['careers', 'about']);
+  // The Phoenix campus is no longer offered; its old pages redirect (see astro.config.mjs).
+  const pages = (await getCollection('pages')).filter((p) => !handBuilt.has(p.id) && p.data.campus !== 'phoenix');
+  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
 const { entry } = Astro.props;

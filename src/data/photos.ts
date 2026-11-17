@@ -10,7 +10,10 @@ import phoenixHandRaised from '../assets/photos/phoenix-hand-raised.jpg';
 import phoenixKayaking from '../assets/photos/phoenix-kayaking.jpg';
 import playground from '../assets/photos/playground.jpg';
 import studentsGroup from '../assets/photos/students-group.jpg';
+import teacherClassroomDiscussion from '../assets/photos/teacher-classroom-discussion.png';
 import teacherHelpingStudents from '../assets/photos/teacher-helping-students.jpg';
+import teacherPortrait from '../assets/photos/teacher-portrait.jpg';
+import teacherStudentsCourt from '../assets/photos/teacher-students-court.png';
 import tucsonFoodDrive from '../assets/photos/tucson-food-drive.jpg';
 import tucsonStudent from '../assets/photos/tucson-student.jpg';
 import yumaNorthFriends from '../assets/photos/yuma-north-friends.jpg';
@@ -22,6 +25,7 @@ import yumaNorthThumbsUp from '../assets/photos/yuma-north-thumbs-up.jpg';
 import illustrativeHeroFourStudents from '../assets/photos/illustrative-hero-four-students.png';
 import illustrativeStudentLaptop from '../assets/photos/illustrative-student-laptop.png';
 import illustrativeMusicActivity from '../assets/photos/illustrative-music-activity.png';
+import illustrativePreschoolBlocks from '../assets/photos/illustrative-preschool-blocks.png';
 
 export interface Photo {
   src: ImageMetadata;
@@ -42,7 +46,10 @@ export const photos = {
   phoenixKayaking: { src: phoenixKayaking, alt: 'Students preparing kayaks on a field trip' },
   playground: { src: playground, alt: 'The shaded campus playground on a sunny day', position: '50% 40%' },
   studentsGroup: { src: studentsGroup, alt: 'Smiling students gathered with a staff member' },
+  teacherClassroomDiscussion: { src: teacherClassroomDiscussion, alt: 'A teacher and students listening during a classroom discussion', position: '30% 50%' },
   teacherHelpingStudents: { src: teacherHelpingStudents, alt: 'A teacher helping students with their work' },
+  teacherPortrait: { src: teacherPortrait, alt: 'A smiling AmeriSchools teacher at her desk', position: '45% 30%' },
+  teacherStudentsCourt: { src: teacherStudentsCourt, alt: 'A teacher with a group of students on the outdoor basketball court', position: '50% 60%' },
   tucsonFoodDrive: { src: tucsonFoodDrive, alt: 'Tucson students with food drive boxes and posters' },
   tucsonStudent: { src: tucsonStudent, alt: 'A Tucson student smiling during a hands-on activity' },
   yumaNorthFriends: { src: yumaNorthFriends, alt: 'Two students giving a thumbs up on the school field' },
@@ -52,6 +59,12 @@ export const photos = {
     src: illustrativeHeroFourStudents,
     alt: 'A teacher and three students building a small wind turbine model together',
     position: '50% 12%',
+    illustrative: true,
+  },
+  illustrativePreschoolBlocks: {
+    src: illustrativePreschoolBlocks,
+    alt: 'A smiling young student building with colorful wooden blocks',
+    position: '72% 28%',
     illustrative: true,
   },
   illustrativeMusicActivity: {

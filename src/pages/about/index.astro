@@ -1,0 +1,23 @@
+---
+// About page: migrated Markdown (vision, key features) plus the interactive history timeline.
+import { getEntry, render } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import HistoryTimeline from '../../components/HistoryTimeline.astro';
+import { faculty } from '../../data/history';
+
+const entry = (await getEntry('pages', 'about'))!;
+const { Content } = await render(entry);
+---
+<ContentLayout title={entry.data.title}>
+  <Content />
+  <HistoryTimeline />
+  <h2>AmeriSchools Faculty and Administration</h2>
+  <ul class="not-prose mt-6 grid gap-4 sm:grid-cols-2">
+    {faculty.map((f) => (
+      <li class="rounded-lg border border-line p-4">
+        <p class="font-display text-lg font-semibold">{f.name}</p>
+        {f.role && <p class="text-sm text-muted">{f.role}</p>}
+      </li>
+    ))}
+  </ul>
+</ContentLayout>
