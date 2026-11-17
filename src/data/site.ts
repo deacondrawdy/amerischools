@@ -2,6 +2,13 @@
 // GROQ queries; keep the shapes stable so pages don't need to change.
 
 import type { PhotoKey } from './photos';
+import powerschoolLogo from '../assets/portals/powerschool.png';
+import parentsquareLogo from '../assets/portals/parentsquare.png';
+import classdojoLogo from '../assets/portals/classdojo.png';
+import cleverLogo from '../assets/portals/clever.png';
+import readingAzLogo from '../assets/portals/reading-a-z.png';
+import razKidsLogo from '../assets/portals/raz-kids.png';
+import khanAcademyLogo from '../assets/portals/khan-academy.png';
 
 export type GradeBand = 'kindergarten' | 'elementary' | 'middle';
 
@@ -80,15 +87,15 @@ export const mainNav: NavItem[] = [
   },
 ];
 
-/** District-wide family portals (from the old site's Portals menus). */
-export const portals = [
-  { label: 'PowerSchool', note: 'See how my child is doing', href: 'https://amerischools.powerschool.com/public/home.html' },
-  { label: 'ParentSquare', note: 'School messages and updates', href: 'https://www.parentsquare.com/' },
-  { label: 'ClassDojo', note: 'Homework and classroom updates', href: 'https://www.classdojo.com/' },
-  { label: 'Clever', note: 'Student sign-in for learning apps', href: 'https://clever.com/' },
-  { label: 'A-Z Reading', note: 'Reading practice', href: 'https://www.readinga-z.com/' },
-  { label: 'RAZ Kids', note: 'Leveled reading online', href: 'https://www.raz-kids.com/' },
-  { label: 'Khan Academy', note: 'Math and more', href: 'https://www.khanacademy.org/' },
+/** District-wide family portals (from the old site's Portals menus). Logos are each service's own app icon. */
+export const portals: { label: string; note: string; href: string; logo: ImageMetadata }[] = [
+  { label: 'PowerSchool', note: 'See how my child is doing', href: 'https://amerischools.powerschool.com/public/home.html', logo: powerschoolLogo },
+  { label: 'ParentSquare', note: 'School messages and updates', href: 'https://www.parentsquare.com/', logo: parentsquareLogo },
+  { label: 'ClassDojo', note: 'Homework and classroom updates', href: 'https://www.classdojo.com/', logo: classdojoLogo },
+  { label: 'Clever', note: 'Student sign-in for learning apps', href: 'https://clever.com/', logo: cleverLogo },
+  { label: 'A-Z Reading', note: 'Reading practice', href: 'https://www.readinga-z.com/', logo: readingAzLogo },
+  { label: 'RAZ Kids', note: 'Leveled reading online', href: 'https://www.raz-kids.com/', logo: razKidsLogo },
+  { label: 'Khan Academy', note: 'Math and more', href: 'https://www.khanacademy.org/', logo: khanAcademyLogo },
 ];
 
 export const isExternal = (href: string) => /^https?:\/\//.test(href);
