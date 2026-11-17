@@ -44,14 +44,3 @@ export const milestones: Milestone[] = [
     icon: 'sprout',
   },
 ];
-
-export const faculty = [
-  { name: 'Dee Kidd', role: 'Executive Director / CEO' },
-  { name: 'Karen Rogers', role: 'Director of Curriculum and Instruction' },
-  { name: 'Regina Frausto', role: 'Marketing Director' },
-  { name: 'Monica Kern', role: 'HR Director' },
-  { name: 'Charissa Goodrum', role: 'Finance and Accounting Director' },
-  { name: 'Tammie Rohr', role: 'Grants and Student Records Specialist' },
-  { name: 'Nick Brangwin', role: 'Staff Accountant' },
-  { name: 'Patricia Martinez', role: '' },
-];

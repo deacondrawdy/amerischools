@@ -3,6 +3,7 @@ title: "About AmeriSchools Academy Arizona Charter Schools"
 legacyUrl: "https://amerischools.org/about/"
 section: "district"
 modified: "2026-07-29"
+# Archived copy of the old page. The live /about/ page is src/pages/about/index.astro (copy in src/data/about.ts).
 ---
 
 AmeriSchools Academy™ strives to create and maintain a safe and inviting learning community to support both students and families. Our goal is to develop lifelong learners who are compassionate, culturally sensitive, effective and responsible citizens.

@@ -19,9 +19,11 @@ const stats = [
   { value: String(campuses.length), label: 'K–8 campuses today' },
 ];
 ---
-<section class="history not-prose mt-14" aria-labelledby="history-heading" data-history>
+<section id="our-history" class="history scroll-mt-24 py-16 lg:py-24" aria-labelledby="history-heading" data-history>
+ <div class="container-site grid gap-x-16 lg:grid-cols-[2fr_3fr]">
+ <div class="lg:sticky lg:top-28 lg:self-start">
   <p class="eyebrow">Since {foundedYear}</p>
-  <h2 id="history-heading" class="mt-2 text-3xl font-bold sm:text-4xl">Our History</h2>
+  <h2 id="history-heading" class="mt-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Our History</h2>
   <p class="mt-4 text-lg text-muted">
     For more than {years} years, The Charter Foundation has educated Arizona students, and every
     AmeriSchools Academy campus takes pride in helping K–8 students grow into lifelong learners.
@@ -35,8 +37,9 @@ const stats = [
       </div>
     ))}
   </dl>
+ </div>
 
-  <ol class="timeline relative mt-12 space-y-10 pl-14 sm:pl-16">
+  <ol class="timeline relative mt-12 space-y-10 pl-14 sm:pl-16 lg:mt-0">
     <!-- Rail: a faint track plus a fill that grows with scroll progress. -->
     <span aria-hidden="true" class="absolute top-2 bottom-2 left-5 w-1 -translate-x-1/2 rounded-full bg-sky-100 sm:left-6"></span>
     <span aria-hidden="true" class="timeline-fill absolute top-2 left-5 w-1 -translate-x-1/2 rounded-full bg-gradient-to-b from-brand-500 to-sun-400 sm:left-6"></span>
@@ -84,6 +87,7 @@ const stats = [
       </div>
     </li>
   </ol>
+ </div>
 </section>
 
 <style>

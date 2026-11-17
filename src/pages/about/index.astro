@@ -1,23 +1,419 @@
 ---
-// About page: migrated Markdown (vision, key features) plus the interactive history timeline.
-import { getEntry, render } from 'astro:content';
-import ContentLayout from '../../layouts/ContentLayout.astro';
+// About page: hero, scroll-lit mission, vision pillars, key-features spotlight,
+// history timeline, leadership and a visit CTA. Copy lives in src/data/about.ts.
+import {
+  ArrowRight, CalendarDays, Compass, Eye, Globe, Heart, HeartHandshake, Laptop, Layers, Mountain,
+  Palette, ShieldCheck, Target, Trees, UsersRound,
+} from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
 import HistoryTimeline from '../../components/HistoryTimeline.astro';
-import { faculty } from '../../data/history';
+import { faculty, features, intro, mission, pillars, values } from '../../data/about';
+import { foundedYear } from '../../data/history';
+import { campuses, site } from '../../data/site';
+import { noWidow } from '../../lib/text';
 
-const entry = (await getEntry('pages', 'about'))!;
-const { Content } = await render(entry);
+const valueIcons = { heart: Heart, globe: Globe, target: Target, shield: ShieldCheck };
+const pillarIcons = { eye: Eye, compass: Compass };
+const featureIcons = {
+  layers: Layers, users: UsersRound, heart: HeartHandshake, trees: Trees, laptop: Laptop, palette: Palette, mountain: Mountain,
+};
+const pad = (n: number) => String(n).padStart(2, '0');
+const initials = (name: string) => name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+const highlights = ['Tuition-free', 'Grades K–8', `${campuses.length} Arizona campuses`];
 ---
-<ContentLayout title={entry.data.title}>
-  <Content />
+<BaseLayout
+  title={`About Us | ${site.name}`}
+  description="AmeriSchools Academy develops lifelong learners who are compassionate, culturally sensitive, effective and responsible citizens. Tuition-free K–8 charter schools in Arizona since 1997."
+>
+  <!-- Mark JS as available before content paints, so reveal animations start hidden instead of flashing. -->
+  <script is:inline>document.documentElement.classList.add('js');</script>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-sky-50">
+    <div aria-hidden="true" class="blob absolute -top-24 -right-24 h-80 w-80 rounded-full bg-sun-400/25 blur-3xl"></div>
+    <div aria-hidden="true" class="blob blob-2 absolute -bottom-32 left-1/3 h-96 w-96 rounded-full bg-brand-500/15 blur-3xl"></div>
+    <div class="container-site relative py-6 lg:py-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex gap-2 text-sm text-muted">
+          <li><a href="/" class="hover:underline">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="text-ink">About</li>
+        </ol>
+      </nav>
+      <div class="grid items-center gap-10 pt-6 pb-10 lg:grid-cols-[5fr_6fr] lg:gap-14 lg:pt-10 lg:pb-16">
+        <div>
+          <p class="eyebrow hero-in" style="--d:0ms">About AmeriSchools</p>
+          <h1 class="hero-in mt-3 text-4xl leading-[1.05] font-bold sm:text-5xl lg:text-[3.6rem]" style="--d:80ms">
+            <span class="block">Lifelong learners,</span>
+            <span class="block text-brand-600">built&nbsp;here.</span>
+          </h1>
+          <p class="hero-in mt-5 text-lg text-muted sm:text-xl" style="--d:160ms">{noWidow(intro)}</p>
+          <ul class="hero-in mt-6 flex flex-wrap gap-2" style="--d:240ms">
+            {highlights.map((h) => (
+              <li class="rounded-full border border-sky-200 bg-white px-4 py-1.5 text-sm font-medium text-navy-900">{h}</li>
+            ))}
+          </ul>
+          <div class="hero-in mt-8 flex flex-wrap gap-4" style="--d:320ms">
+            <a href="#key-features-of-our-school-program" class="btn-primary">Our Approach</a>
+            <a href="#our-history" class="btn-outline">Our History</a>
+          </div>
+        </div>
+        <div class="hero-in relative" style="--d:200ms">
+          <div class="hero-photo aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+            <ImageSlot photo="teacherStudentsCourt" loading="eager" sizes="(min-width: 1024px) 55vw, 100vw" />
+          </div>
+          <div class="float-card absolute -bottom-6 left-4 flex items-center gap-3 rounded-xl bg-white px-5 py-4 shadow-lg sm:left-[-1.5rem]">
+            <span class="grid h-11 w-11 place-items-center rounded-full bg-sun-400 text-navy-950">
+              <CalendarDays class="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span class="block font-display text-2xl leading-none font-bold">Since {foundedYear}</span>
+              <span class="text-sm text-muted">Serving Arizona families</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission: words light up as the statement scrolls through the viewport -->
+  <section class="bg-navy-900 py-20 text-white lg:py-28" aria-labelledby="mission-heading" data-mission>
+    <div class="container-site">
+      <h2 id="mission-heading" class="eyebrow text-sun-400!">Our Mission</h2>
+      <p class="mt-5 max-w-5xl font-display text-3xl leading-tight font-semibold text-white sm:text-4xl lg:text-[3.25rem]">
+        {mission.split(' ').map((w) => <span class="word">{w} </span>)}
+      </p>
+      <ul class="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {values.map(({ icon, label }, i) => {
+          const Icon = valueIcons[icon];
+          return (
+            <li data-reveal style={`--d:${i * 90}ms`} class="value flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sun-400/15 text-sun-400">
+                <Icon class="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span class="font-display text-lg font-semibold">{label}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Vision & commitment -->
+  <section class="py-16 lg:py-24" aria-label="Vision and commitment">
+    <div class="container-site grid gap-6 lg:grid-cols-2 lg:gap-8">
+      {pillars.map(({ icon, title, body }, i) => {
+        const Icon = pillarIcons[icon];
+        return (
+          <article data-reveal style={`--d:${i * 120}ms`} class="lift relative overflow-hidden rounded-2xl border border-line bg-white p-8 shadow-sm lg:p-10">
+            <span aria-hidden="true" class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-sky-50"></span>
+            <span class="relative grid h-14 w-14 place-items-center rounded-xl bg-brand-600 text-white">
+              <Icon class="h-7 w-7" aria-hidden="true" />
+            </span>
+            <h2 class="relative mt-6 text-2xl font-bold sm:text-3xl">{title}</h2>
+            <p class="relative mt-3 text-lg leading-relaxed text-muted">{body}</p>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Key features: tabbed spotlight on desktop, stacked cards on mobile -->
+  <section id="key-features-of-our-school-program" class="scroll-mt-24 bg-sky-50 py-16 lg:py-24" aria-labelledby="features-heading" data-features>
+    <div class="container-site">
+      <div class="max-w-3xl">
+        <p class="eyebrow">Our Approach</p>
+        <h2 id="features-heading" class="mt-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Key features of our school&nbsp;program</h2>
+        <p class="mt-4 text-lg text-muted">{noWidow('Seven ideas shape every AmeriSchools classroom, from how students are grouped to how far learning travels.')}</p>
+      </div>
+
+      <!-- Mobile / tablet -->
+      <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:hidden">
+        {features.map((f, i) => {
+          const Icon = featureIcons[f.icon];
+          return (
+            <li data-reveal style={`--d:${(i % 2) * 100}ms`} class="overflow-hidden rounded-2xl bg-white shadow-sm">
+              <div class="aspect-[16/10]"><ImageSlot photo={f.photo} sizes="(min-width: 640px) 50vw, 100vw" /></div>
+              <div class="p-6">
+                <div class="flex items-center gap-3">
+                  <span class="grid h-10 w-10 place-items-center rounded-full bg-sky-50 text-brand-600"><Icon class="h-5 w-5" aria-hidden="true" /></span>
+                  <span class="font-display text-sm font-bold text-brand-600">{pad(i + 1)}</span>
+                </div>
+                <h3 class="mt-3 text-xl font-semibold">{f.title}</h3>
+                <p class="mt-2 text-muted">{f.body}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <!-- Desktop -->
+      <div class="mt-12 hidden gap-10 lg:grid lg:grid-cols-[5fr_7fr]">
+        <div role="tablist" aria-label="Key features" aria-orientation="vertical" class="flex flex-col gap-2">
+          {features.map((f, i) => {
+            const Icon = featureIcons[f.icon];
+            return (
+              <button
+                type="button"
+                role="tab"
+                id={`feature-tab-${i}`}
+                aria-controls={`feature-panel-${i}`}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                tabindex={i === 0 ? 0 : -1}
+                class="feature-tab group relative flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 text-left transition-colors"
+              >
+                <span class="tab-icon grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white text-brand-600 shadow-sm transition-colors">
+                  <Icon class="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span class="min-w-0">
+                  <span class="block font-display text-xs font-bold tracking-widest text-brand-600">{pad(i + 1)}</span>
+                  <span class="block font-display text-lg font-semibold text-ink">{f.title}</span>
+                </span>
+                <span aria-hidden="true" class="tab-progress absolute bottom-0 left-0 h-1 bg-sun-400"></span>
+              </button>
+            );
+          })}
+        </div>
+        <div class="grid">
+          {features.map((f, i) => (
+            <div
+              role="tabpanel"
+              id={`feature-panel-${i}`}
+              aria-labelledby={`feature-tab-${i}`}
+              class:list={['feature-panel relative col-start-1 row-start-1 min-h-[34rem] overflow-hidden rounded-2xl shadow-lg', { 'is-active': i === 0 }]}
+            >
+              <div class="absolute inset-0"><ImageSlot photo={f.photo} sizes="55vw" /></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/30 to-transparent"></div>
+              <div class="panel-copy absolute inset-x-0 bottom-0 p-10">
+                <p class="font-display text-6xl leading-none font-bold text-sun-400">{pad(i + 1)}</p>
+                <h3 class="mt-3 text-3xl font-bold text-white">{f.title}</h3>
+                <p class="mt-3 max-w-xl text-lg text-sky-100">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
   <HistoryTimeline />
-  <h2>AmeriSchools Faculty and Administration</h2>
-  <ul class="not-prose mt-6 grid gap-4 sm:grid-cols-2">
-    {faculty.map((f) => (
-      <li class="rounded-lg border border-line p-4">
-        <p class="font-display text-lg font-semibold">{f.name}</p>
-        {f.role && <p class="text-sm text-muted">{f.role}</p>}
-      </li>
-    ))}
-  </ul>
-</ContentLayout>
+
+  <!-- Leadership -->
+  <section class="border-t border-line bg-white py-16 lg:py-24" aria-labelledby="leadership-heading">
+    <div class="container-site">
+      <p class="eyebrow">The people behind our schools</p>
+      <h2 id="leadership-heading" class="mt-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Faculty and Administration</h2>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {faculty.map((f, i) => (
+          <li data-reveal style={`--d:${(i % 4) * 80}ms`} class="lift flex items-center gap-4 rounded-xl border border-line bg-white p-5 shadow-sm">
+            <span aria-hidden="true" class="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-gradient-to-br from-brand-500 to-navy-900 font-display text-lg font-bold text-white">
+              {initials(f.name)}
+            </span>
+            <span>
+              <span class="block font-display text-lg font-semibold">{f.name}</span>
+              {f.role && <span class="block text-sm text-muted">{f.role}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative overflow-hidden bg-brand-700 py-16 text-white lg:py-20" aria-labelledby="cta-heading">
+    <div aria-hidden="true" class="blob absolute -top-20 -left-20 h-72 w-72 rounded-full bg-sun-400/20 blur-3xl"></div>
+    <div class="container-site relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+      <div data-reveal>
+        <h2 id="cta-heading" class="text-3xl font-bold text-white sm:text-4xl">Come see the difference for yourself.</h2>
+        <p class="mt-3 text-lg text-sky-100">{noWidow('Tour a campus, meet our teachers, and find the right fit for your child.')}</p>
+      </div>
+      <div data-reveal style="--d:120ms" class="flex flex-wrap gap-4">
+        <a href="/visit/" class="btn-primary">Schedule a Tour <ArrowRight class="h-5 w-5" aria-hidden="true" /></a>
+        <a href={site.applyUrl} class="btn border-2 border-white text-white hover:bg-white/10">Apply Now</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Hero entrance */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(1.25rem); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes drift {
+    50% { transform: translate(1.5rem, -1rem) scale(1.08); }
+  }
+  @keyframes bob {
+    50% { transform: translateY(-0.4rem); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-in { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--d, 0ms); }
+    .blob { animation: drift 14s ease-in-out infinite; }
+    .blob-2 { animation-duration: 18s; animation-direction: reverse; }
+    .float-card { animation: rise 0.8s 0.5s both, bob 5s 1.3s ease-in-out infinite; }
+    .hero-photo :global(img) { transition: transform 1.2s ease; }
+    .hero-photo:hover :global(img) { transform: scale(1.04); }
+
+    /* Scroll reveals */
+    :global(.js) [data-reveal] {
+      opacity: 0;
+      transform: translateY(1.5rem);
+      /* Reveal uses opacity/transform (staggered); hover effects use translate/shadow/background (instant). */
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), translate 0.3s ease,
+        box-shadow 0.3s ease, background-color 0.3s ease;
+      transition-delay: var(--d, 0ms), var(--d, 0ms), 0s, 0s, 0s;
+    }
+    :global(.js) [data-reveal].is-visible { opacity: 1; transform: none; }
+
+    .lift:hover { translate: 0 -4px; box-shadow: 0 12px 30px -12px rgb(11 45 91 / 0.25); }
+    .value:hover { background-color: rgb(255 255 255 / 0.1); }
+  }
+
+  /* Mission words: dimmed until the scroll position reaches them (set by script). */
+  .word { transition: opacity 0.25s linear; }
+
+  /* Feature spotlight */
+  .feature-tab:hover { background: rgb(255 255 255 / 0.6); }
+  .feature-tab[aria-selected='true'] { background: white; box-shadow: 0 8px 24px -12px rgb(11 45 91 / 0.25); }
+  .feature-tab[aria-selected='true'] .tab-icon { background: var(--color-brand-600); color: white; }
+  .tab-progress { width: 0; }
+  .feature-tab[aria-selected='true'] .tab-progress { width: 100%; }
+  [data-features].is-auto .feature-tab[aria-selected='true'] .tab-progress { animation: fill var(--cycle, 7s) linear both; }
+  @keyframes fill { from { width: 0; } to { width: 100%; } }
+
+  .feature-panel { opacity: 0; visibility: hidden; transition: opacity 0.6s ease, visibility 0.6s; }
+  .feature-panel.is-active { opacity: 1; visibility: visible; }
+  .feature-panel :global(img) { transform: scale(1.08); transition: transform 7s ease-out; }
+  .feature-panel.is-active :global(img) { transform: scale(1); }
+  .panel-copy { transform: translateY(1rem); opacity: 0; transition: transform 0.6s 0.15s ease, opacity 0.6s 0.15s ease; }
+  .feature-panel.is-active .panel-copy { transform: none; opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .feature-panel :global(img), .feature-panel.is-active :global(img) { transform: none; transition: none; }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal-on-scroll for any [data-reveal] element.
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      }
+    },
+    { rootMargin: '0px 0px -10% 0px' },
+  );
+  document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+
+  // Mission statement: light each word as the paragraph moves up the screen.
+  const mission = document.querySelector<HTMLElement>('[data-mission]');
+  if (mission && !reduce) {
+    const words = [...mission.querySelectorAll<HTMLElement>('.word')];
+    const para = words[0]?.parentElement;
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      if (!para) return;
+      const r = para.getBoundingClientRect();
+      // 0 when the paragraph's top hits 85% of the viewport, 1 when its bottom reaches 45%.
+      const start = innerHeight * 0.85;
+      const end = innerHeight * 0.45;
+      const p = Math.min(1, Math.max(0, (start - r.top) / (start - end + r.height)));
+      const lit = p * words.length;
+      words.forEach((w, i) => (w.style.opacity = String(Math.min(1, Math.max(0.2, lit - i + 0.2)))));
+    };
+    const queue = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(paint);
+      }
+    };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    paint();
+  }
+
+  // Key-feature spotlight: accessible vertical tabs that auto-advance while in view
+  // until the visitor interacts.
+  const features = document.querySelector<HTMLElement>('[data-features]');
+  if (features) {
+    const tabs = [...features.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...features.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const CYCLE = 7000;
+    let current = 0;
+    let timer: number | undefined;
+    let stopped = reduce;
+
+    const select = (i: number, focus = false) => {
+      current = (i + tabs.length) % tabs.length;
+      tabs.forEach((t, j) => {
+        const on = j === current;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        // Restart the progress animation on the newly active tab.
+        const bar = t.querySelector<HTMLElement>('.tab-progress');
+        if (bar && on) {
+          bar.style.animation = 'none';
+          void bar.offsetWidth;
+          bar.style.animation = '';
+        }
+      });
+      panels.forEach((p, j) => {
+        const on = j === current;
+        p.classList.toggle('is-active', on);
+        p.toggleAttribute('inert', !on);
+        p.setAttribute('aria-hidden', String(!on));
+      });
+      if (focus) tabs[current].focus();
+    };
+    const stop = () => {
+      stopped = true;
+      clearInterval(timer);
+      features.classList.remove('is-auto');
+    };
+    const start = () => {
+      if (stopped) return;
+      clearInterval(timer);
+      features.classList.add('is-auto');
+      features.style.setProperty('--cycle', `${CYCLE}ms`);
+      timer = window.setInterval(() => select(current + 1), CYCLE);
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => {
+        stop();
+        select(i);
+      });
+      t.addEventListener('keydown', (e) => {
+        const keys: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+        if (e.key in keys) {
+          e.preventDefault();
+          stop();
+          select(current + keys[e.key], true);
+        } else if (e.key === 'Home' || e.key === 'End') {
+          e.preventDefault();
+          stop();
+          select(e.key === 'Home' ? 0 : tabs.length - 1, true);
+        }
+      });
+    });
+    // Pause while the pointer is over the spotlight; resume when it leaves.
+    const spotlight = tabs[0]?.parentElement?.parentElement;
+    spotlight?.addEventListener('mouseenter', () => {
+      clearInterval(timer);
+      features.classList.remove('is-auto');
+    });
+    spotlight?.addEventListener('mouseleave', start);
+
+    select(0);
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : (clearInterval(timer), features.classList.remove('is-auto'))), {
+      threshold: 0.35,
+    }).observe(features);
+  }
+</script>
