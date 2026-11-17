@@ -7,9 +7,9 @@ export async function getStaticPaths() {
   // Pages rebuilt by hand under src/pages take over their migrated Markdown.
   const handBuilt = new Set(['careers', 'about']);
   // The Phoenix campus is no longer offered; its old pages redirect (see astro.config.mjs).
-  // Curriculum pages are hand-built too (src/pages/campuses/[slug]/curriculum.astro).
+  // Campus curriculum and contact pages are hand-built too (src/pages/campuses/[slug]/).
   const pages = (await getCollection('pages')).filter(
-    (p) => !handBuilt.has(p.id) && p.data.campus !== 'phoenix' && !p.id.endsWith('/curriculum'),
+    (p) => !handBuilt.has(p.id) && p.data.campus !== 'phoenix' && !/\/(curriculum|contact)$/.test(p.id),
   );
   return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
