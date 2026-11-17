@@ -38,7 +38,7 @@ const links = campus
       </div>
     )}
     {!campus && (
-      <ul aria-label="Campus phone numbers" class="grid grid-cols-2 gap-x-8 gap-y-3 text-sm md:border-l md:border-white/20 md:pl-10 2xl:flex 2xl:gap-10">
+      <ul aria-label="Campus phone numbers" class="flex flex-wrap gap-x-8 gap-y-3 text-sm md:border-l md:border-white/20 md:pl-10 2xl:gap-10">
         {campuses.map((c) => (
           <li>
             <span class="block text-white/70">{c.name}</span>

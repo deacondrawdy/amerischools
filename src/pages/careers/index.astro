@@ -143,18 +143,18 @@ const requirements = [
           {noWidow('Choose a campus to see current listings. Questions about a position? Call the campus office.')}
         </p>
       </div>
-      <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <ul class="campus-grid mt-8">
         {campuses.map((c) => (
-          <li class="card flex flex-col p-6">
+          <li class="card flex flex-col items-center p-6 text-center">
             <Award class="h-8 w-8 text-brand-600" aria-hidden="true" />
             <h3 class="mt-3 text-xl font-semibold">{c.name}</h3>
             <p class="mt-1 text-sm text-muted">Grades {c.grades}</p>
-            <p class="mt-3 flex items-start gap-2 text-sm"><MapPin class="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />{c.street}, {c.cityStateZip}</p>
+            <p class="mt-3 text-sm"><MapPin class="mr-1.5 inline h-4 w-4 -translate-y-px text-muted" aria-hidden="true" />{c.street},<br />{c.cityStateZip}</p>
             <a href={telHref(c.phone)} class="mt-2 flex items-center gap-2 text-sm font-medium hover:underline">
               <Phone class="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />{c.phone}
             </a>
             <span class="mt-auto pt-5"></span>
-            <a href={jobSearch(c.city)} target="_blank" rel="noopener" class="btn-primary justify-center py-2 text-base">
+            <a href={jobSearch(c.city)} target="_blank" rel="noopener" class="btn-primary w-full justify-center py-2 text-base">
               View Openings <ExternalLink class="h-4 w-4" aria-hidden="true" /><span class="sr-only">(opens in a new tab)</span>
             </a>
           </li>

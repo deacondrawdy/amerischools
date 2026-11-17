@@ -6,16 +6,18 @@ import { campuses, site, telHref } from '../../data/site';
 ---
 <BaseLayout title={`Plan a Campus Visit | ${site.name}`} description="Schedule a tour of an AmeriSchools campus.">
   <section class="py-14">
-    <div class="container-site max-w-3xl">
+    <div class="container-site">
+      <div class="mx-auto max-w-3xl text-center">
       <p class="eyebrow">Get to know us</p>
       <h1 class="mt-2 text-4xl font-bold">Plan a campus visit</h1>
       <p class="mt-3 text-lg text-muted">Call the campus office and our team will set up a time for you to tour classrooms and meet staff.</p>
-      <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+      </div>
+      <ul class="campus-grid mt-8">
         {campuses.map((c) => (
-          <li id={c.slug} class="card p-5">
+          <li id={c.slug} class="card p-6 text-center">
             <h2 class="text-xl font-semibold">{c.name} <span class="text-base font-normal text-muted">({c.grades})</span></h2>
             <p class="mt-1 text-sm text-muted">{c.street}, {c.cityStateZip}</p>
-            <a href={telHref(c.phone)} class="link-arrow mt-3"><Phone class="h-4 w-4" aria-hidden="true" />{c.phone}</a>
+            <a href={telHref(c.phone)} class="link-arrow mt-3 justify-center"><Phone class="h-4 w-4" aria-hidden="true" />{c.phone}</a>
           </li>
         ))}
       </ul>

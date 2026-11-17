@@ -10,9 +10,9 @@ const { campus } = Astro.props;
 ---
 <article class="card group relative flex flex-col">
   <div class="aspect-[16/9] overflow-hidden">
-    <ImageSlot photo={campus.cardPhoto} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" />
+    <ImageSlot photo={campus.cardPhoto} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
   </div>
-  <div class="p-4">
+  <div class="p-5 text-center">
     <h3 class="text-lg font-semibold">{campus.name}</h3>
     <p class="text-sm text-muted">{campus.grades}</p>
     <a href={`/campuses/${campus.slug}/`} class="link-arrow mt-2 underline after:absolute after:inset-0">

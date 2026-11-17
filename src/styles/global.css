@@ -56,6 +56,13 @@
 @utility container-site {
   @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 xl:px-12;
 }
+/* One card per campus: up to three per row, and any partial row stays centered. */
+@utility campus-grid {
+  @apply mx-auto flex max-w-6xl flex-wrap justify-center gap-5;
+  & > * {
+    @apply w-full sm:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)];
+  }
+}
 @utility eyebrow {
   @apply text-xs font-semibold uppercase tracking-[0.18em] text-brand-700;
 }
