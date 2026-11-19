@@ -1,0 +1,89 @@
+---
+// Embeds an AmeriSchools HubSpot form (IDs in src/data/marketing.ts).
+// Until the form ID is set it shows a clearly labeled placeholder with the phone number,
+// so pages can be reviewed now and the real form drops in without layout changes.
+// Submissions are tracked by Analytics.astro (tour_request / inquiry_submit).
+import { Phone } from '@lucide/astro';
+import { tracking, type FormKind } from '../data/marketing';
+import { site, telHref, type Campus } from '../data/site';
+
+interface Props {
+  kind: FormKind;
+  /** Pre-fills the HubSpot campus field so the lead reaches the right campus. */
+  campus?: Campus;
+  class?: string;
+}
+const { kind, campus, class: className = '' } = Astro.props;
+const hs = tracking.hubspot;
+const formId = hs.forms[kind];
+const ready = Boolean(hs.portalId && formId);
+const label = kind === 'tour' ? 'Tour request form' : 'Inquiry form';
+const phone = campus?.phone ?? site.phone;
+const campusValue = campus ? (hs.campusValues[campus.slug] ?? campus.name) : '';
+---
+{ready ? (
+  <div
+    class:list={['hs-embed min-h-80', className]}
+    data-hs-form
+    data-portal-id={hs.portalId}
+    data-form-id={formId}
+    data-region={hs.region}
+    data-campus-field={hs.campusField}
+    data-campus-value={campusValue || undefined}
+    data-campus-map={campus ? undefined : JSON.stringify(hs.campusValues)}
+  >
+    <noscript>
+      <p>Please call <a href={telHref(phone)}>{phone}</a> to {kind === 'tour' ? 'schedule a tour' : 'ask a question'}.</p>
+    </noscript>
+  </div>
+) : (
+  <div class:list={['rounded-2xl border-2 border-dashed border-brand-500/40 bg-sky-50 p-6 text-center', className]} data-form-placeholder={kind}>
+    <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase">{label}{campus && ` · ${campus.name}`}</p>
+    <p class="mt-2 text-muted">The AmeriSchools HubSpot {kind === 'tour' ? 'tour request' : 'inquiry'} form appears here once it's connected.</p>
+    <p class="mt-4">
+      Until then, call
+      <a href={telHref(phone)} class="inline-flex items-center gap-1 font-semibold text-brand-700 hover:underline">
+        <Phone class="h-4 w-4" aria-hidden="true" />{phone}
+      </a>
+    </p>
+  </div>
+)}
+
+<script>
+  // Loads HubSpot's form embed once and renders every [data-hs-form] on the page.
+  type HsForms = { forms: { create: (o: Record<string, unknown>) => void } };
+  const slots = document.querySelectorAll<HTMLElement>('[data-hs-form]');
+  if (slots.length) {
+    const region = slots[0].dataset.region;
+    const s = document.createElement('script');
+    s.src = `https://${region === 'eu1' ? 'js-eu1' : 'js'}.hsforms.net/forms/embed/v2.js`;
+    s.async = true;
+    s.onload = () => {
+      const hbspt = (window as unknown as { hbspt?: HsForms }).hbspt;
+      if (!hbspt) return;
+      slots.forEach((el, i) => {
+        el.id ||= `hs-form-${i}`;
+        const { portalId, formId, campusField, campusMap } = el.dataset;
+        // District pages (e.g. /visit/?campus=tucson) pre-fill the campus from the URL.
+        const fromUrl = new URLSearchParams(location.search).get('campus') ?? '';
+        const campusValue = el.dataset.campusValue ?? (campusMap ? (JSON.parse(campusMap) as Record<string, string>)[fromUrl] : undefined);
+        hbspt.forms.create({
+          region,
+          portalId,
+          formId,
+          target: `#${el.id}`,
+          onFormReady: (form: unknown) => {
+            if (!campusField || !campusValue) return;
+            // Older embeds pass a jQuery-wrapped form; newer ones pass the element.
+            const f = ((form as { 0?: HTMLFormElement })[0] ?? form) as HTMLFormElement;
+            const input = f.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${campusField}"]`);
+            if (!input) return;
+            input.value = campusValue;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+          },
+        });
+      });
+    };
+    document.head.append(s);
+  }
+</script>

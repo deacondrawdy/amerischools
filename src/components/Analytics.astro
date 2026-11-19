@@ -1,0 +1,112 @@
+---
+// Marketing tags + conversion events. Configure IDs in src/data/marketing.ts; blank IDs load nothing.
+//
+// Events (see trackedEvents in marketing.ts):
+//   tour_request / inquiry_submit  HubSpot form submissions (global HubSpot form events)
+//   enroll_click                   links to /admissions/… or the registration packet
+//   phone_click                    any tel: link
+//   tour_cta_click                 "Request a tour" buttons; or any link with data-track="…"
+// Each event goes to GA4 (same name), Google Ads (if a conversion label is set) and Meta.
+//
+// Testing: open any page with ?track_debug=1 and every event is logged to the browser console
+// (and kept in window.amerischoolsEvents) for the rest of the session, IDs or not.
+import { tracking as t } from '../data/marketing';
+
+const gtagId = t.ga4Id || t.googleAds.id;
+const hubspotForms = Object.fromEntries(
+  Object.entries(t.hubspot.forms)
+    .filter(([, id]) => id)
+    .map(([kind, id]) => [id, kind]),
+);
+const cfg = {
+  gtagId,
+  ga4Id: t.ga4Id,
+  adsId: t.googleAds.id,
+  adsConversions: t.googleAds.conversions,
+  metaPixelId: t.metaPixelId,
+  hubspotForms,
+};
+const hsHost = t.hubspot.region === 'eu1' ? 'js-eu1.hs-scripts.com' : 'js.hs-scripts.com';
+---
+{gtagId && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}></script>}
+{t.hubspot.portalId && <script is:inline id="hs-script-loader" async defer src={`https://${hsHost}/${t.hubspot.portalId}.js`}></script>}
+<script is:inline define:vars={{ cfg }}>
+  var debug = false;
+  try {
+    if (/[?&]track_debug=1/.test(location.search)) sessionStorage.setItem('track_debug', '1');
+    debug = sessionStorage.getItem('track_debug') === '1';
+  } catch (e) {
+    debug = /[?&]track_debug=1/.test(location.search);
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+  if (cfg.gtagId) {
+    gtag('js', new Date());
+    if (cfg.ga4Id) gtag('config', cfg.ga4Id);
+    if (cfg.adsId) gtag('config', cfg.adsId);
+  }
+
+  if (cfg.metaPixelId) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', cfg.metaPixelId);
+    fbq('track', 'PageView');
+  }
+
+  // Meta standard events where one fits; custom events otherwise.
+  var META = {
+    tour_request: ['track', 'Schedule'],
+    inquiry_submit: ['track', 'Lead'],
+    phone_click: ['track', 'Contact'],
+    enroll_click: ['trackCustom', 'EnrollClick'],
+    tour_cta_click: ['trackCustom', 'TourClick'],
+  };
+
+  window.amerischoolsEvents = [];
+  function track(name, params) {
+    var p = { campus: document.documentElement.dataset.campus || 'district' };
+    for (var k in params || {}) if (params[k] !== undefined && params[k] !== '') p[k] = params[k];
+    var sent = [];
+    if (cfg.ga4Id) { gtag('event', name, p); sent.push('GA4'); }
+    var label = cfg.adsConversions[name];
+    if (cfg.adsId && label) { gtag('event', 'conversion', { send_to: cfg.adsId + '/' + label }); sent.push('Google Ads'); }
+    if (cfg.metaPixelId && window.fbq && META[name]) { fbq(META[name][0], META[name][1], p); sent.push('Meta'); }
+    window.amerischoolsEvents.push({ name: name, params: p, sent: sent, at: new Date().toISOString() });
+    if (debug) console.info('[AmeriSchools tracking]', name, p, sent.length ? '→ ' + sent.join(', ') : '→ (no tracking IDs configured yet)');
+  }
+  window.amerischoolsTrack = track;
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var text = (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100);
+    if (a.dataset.track) return track(a.dataset.track, { link_text: text, link_url: a.getAttribute('href') });
+    var href = a.getAttribute('href') || '';
+    if (href.indexOf('tel:') === 0) return track('phone_click', { phone_number: href.slice(4), link_text: text });
+    var url;
+    try { url = new URL(a.href, location.href); } catch (err) { return; }
+    if (url.origin !== location.origin) return;
+    if (/^\/admissions\//.test(url.pathname) || /registration-packet/i.test(url.pathname)) {
+      track('enroll_click', { link_url: url.pathname, link_text: text });
+    } else if (/^\/visit\//.test(url.pathname) || /\/tours\/$/.test(url.pathname)) {
+      track('tour_cta_click', { link_url: url.pathname, link_text: text });
+    }
+  }, true);
+
+  // HubSpot form submissions. Legacy (v2) embeds post a window message; the newer embed fires a DOM event.
+  function hubspotSubmitted(formId) {
+    var kind = cfg.hubspotForms[formId];
+    if (kind) track(kind === 'tour' ? 'tour_request' : 'inquiry_submit', { form_id: formId });
+  }
+  window.addEventListener('message', function (e) {
+    var d = e.data;
+    if (d && d.type === 'hsFormCallback' && d.eventName === 'onFormSubmitted') hubspotSubmitted(d.id);
+  });
+  window.addEventListener('hs-form-event:on-submission:success', function (e) {
+    if (e.detail && e.detail.formId) hubspotSubmitted(e.detail.formId);
+  });
+</script>

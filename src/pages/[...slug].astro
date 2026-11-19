@@ -2,10 +2,12 @@
 // Renders every page migrated from the old site (src/content/pages, excluding _legacy/).
 import { getCollection, render } from 'astro:content';
 import ContentLayout from '../layouts/ContentLayout.astro';
+import HubSpotForm from '../components/HubSpotForm.astro';
+import { campuses } from '../data/site';
 
 export async function getStaticPaths() {
   // Pages rebuilt by hand under src/pages take over their migrated Markdown.
-  const handBuilt = new Set(['careers', 'about']);
+  const handBuilt = new Set(['careers', 'about', 'admissions/interest-form']);
   // The Phoenix campus is no longer offered; its old pages redirect (see astro.config.mjs).
   // Campus curriculum and contact pages are hand-built too (src/pages/campuses/[slug]/).
   const pages = (await getCollection('pages')).filter(
@@ -18,8 +20,17 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 // Old titles repeat the campus name ("Tucson Campus Calendar"); the breadcrumb already says it.
 const campusPrefix = /^(Phoenix( Camelback)?|Tucson( Campus)?|(North )?Yuma( North| Middle| South)?)\s+/i;
+// Campus tour pages get the HubSpot tour request form under the open-house details.
+const tourCampus = entry.id.endsWith('/tours') ? campuses.find((c) => c.slug === entry.data.campus) : undefined;
 const title = entry.data.campus ? entry.data.title.replace(campusPrefix, '').replace(/^Campus\s+/i, '') : entry.data.title;
 ---
 <ContentLayout title={title} campusSlug={entry.data.campus}>
   <Content />
+  {tourCampus && (
+    <section aria-labelledby="tour-form-heading" class="not-prose mt-10">
+      <h2 id="tour-form-heading" class="text-3xl font-bold">Request a tour</h2>
+      <p class="mt-2 text-muted">Pick a few times that work and our {tourCampus.name} team will confirm your visit.</p>
+      <HubSpotForm kind="tour" campus={tourCampus} class="mt-5" />
+    </section>
+  )}
 </ContentLayout>

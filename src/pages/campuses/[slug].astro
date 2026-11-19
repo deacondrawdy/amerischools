@@ -8,6 +8,7 @@ import CampusNav from '../../components/CampusNav.astro';
 import GradeTabs from '../../components/GradeTabs.astro';
 import ImageSlot from '../../components/ImageSlot.astro';
 import TaxCreditBanner from '../../components/TaxCreditBanner.astro';
+import HubSpotForm from '../../components/HubSpotForm.astro';
 import { campuses, directionsHref, site, telHref, type Campus } from '../../data/site';
 import type { PhotoKey } from '../../data/photos';
 import { findCampusLink, mealMenuLinks } from '../../data/legacy';
@@ -106,7 +107,7 @@ const familyInfo: { icon: typeof CalendarDays; title: string; body: string; link
         </h1>
         <p class="mt-4 text-lg text-muted sm:text-xl">{campus.intro}</p>
         <div class="mt-6 flex flex-wrap gap-4">
-          <a href={`/visit/?campus=${campus.slug}`} class="btn-primary">Request a Tour</a>
+          <a href="#request-a-tour" data-track="tour_cta_click" class="btn-primary">Request a Tour</a>
           <a href={site.applyUrl} class="btn-outline">Apply</a>
         </div>
         <p class="mt-4 text-lg">Questions? Call <a href={telHref(campus.phone)} class="font-semibold text-brand-700 hover:underline">{campus.phone}</a></p>
@@ -210,11 +211,27 @@ const familyInfo: { icon: typeof CalendarDays; title: string; body: string; link
       <h2 id="visit-heading" class="text-3xl font-bold sm:text-4xl">Come see the difference for yourself.</h2>
       <p class="mt-2 max-w-md text-lg text-muted">Meet our team, explore the campus, and ask the questions that matter to your family.</p>
       <div class="mt-5 flex flex-wrap items-center gap-5">
-        <a href={`/visit/?campus=${campus.slug}`} class="btn-primary">Request a {campus.name} Tour</a>
+        <a href="#request-a-tour" data-track="tour_cta_click" class="btn-primary">Request a {campus.name} Tour</a>
         <p class="text-sm">
           Our team will confirm your visit.<br />
           Questions? Call <a href={telHref(campus.phone)} class="font-semibold text-brand-700 hover:underline">{campus.phone}</a>
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lead forms (HubSpot): tour request + inquiry, pre-filled with this campus -->
+  <section class="py-12 lg:py-16" aria-label={`Contact ${campus.name}`}>
+    <div class="container-site grid gap-10 lg:grid-cols-2 lg:gap-14">
+      <div id="request-a-tour" class="scroll-mt-28">
+        <h2 class="text-3xl font-bold">Request a tour</h2>
+        <p class="mt-2 text-muted">Pick a few times that work and our {campus.name} team will confirm your visit.</p>
+        <HubSpotForm kind="tour" campus={campus} class="mt-5" />
+      </div>
+      <div id="ask-a-question" class="scroll-mt-28">
+        <h2 class="text-3xl font-bold">Have a question?</h2>
+        <p class="mt-2 text-muted">Ask about enrollment, programs, or anything else. Our team will get back to you soon.</p>
+        <HubSpotForm kind="inquiry" campus={campus} class="mt-5" />
       </div>
     </div>
   </section>

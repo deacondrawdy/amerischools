@@ -1,0 +1,42 @@
+---
+// Accessibility statement (linked from the footer). Draft wording for AmeriSchools to approve.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { campuses, site, telHref } from '../../data/site';
+---
+<BaseLayout title={`Accessibility | ${site.name}`} description="AmeriSchools Academy's commitment to an accessible website, and how to request help or report a barrier.">
+  <div class="container-site py-10 lg:py-14">
+    <nav aria-label="Breadcrumb">
+      <ol class="flex flex-wrap gap-2 text-sm text-muted">
+        <li><a href="/" class="hover:underline">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-ink">Accessibility</li>
+      </ol>
+    </nav>
+    <h1 class="mt-4 text-4xl font-bold sm:text-5xl">Accessibility</h1>
+    <article class="prose prose-lg mt-6 max-w-3xl prose-headings:font-display prose-headings:text-ink prose-a:text-brand-700">
+      <p>
+        {site.name} is committed to making our website usable by everyone, including people with disabilities.
+        We design and test this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1, Level AA, and we
+        keep working to improve it.
+      </p>
+      <h2>What we do</h2>
+      <ul>
+        <li>Text alternatives (alt text) for meaningful images</li>
+        <li>Full keyboard navigation, with a “Skip to main content” link and visible focus</li>
+        <li>Headings, labels and landmarks that work with screen readers</li>
+        <li>Color contrast that meets WCAG AA, and text that resizes without breaking the page</li>
+        <li>Respect for “reduce motion” settings on animations</li>
+      </ul>
+      <h2>Need help or found a barrier?</h2>
+      <p>
+        If any part of this website is difficult to use, or you need information in another format, please contact us and we
+        will help. Tell us the page address and what you were trying to do.
+      </p>
+      <ul>
+        <li>District office: <a href={telHref(site.phone)}>{site.phone}</a></li>
+        {campuses.map((c) => <li>{c.name} campus: <a href={telHref(c.phone)}>{c.phone}</a></li>)}
+      </ul>
+      <p>Some documents on this site are PDFs provided by outside agencies; if one is not accessible to you, call us and we will provide the information another way.</p>
+    </article>
+  </div>
+</BaseLayout>

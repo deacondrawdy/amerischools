@@ -1,26 +1,47 @@
 ---
-// Interim page: the tour request form (Pages Function + Turnstile) lands in build step 6.
-import { Phone } from '@lucide/astro';
+// Tour requests for all campuses: the HubSpot tour form (campus pre-filled from ?campus=)
+// beside each campus's address, phone and open-house link.
+import { ArrowRight, MapPin, Phone } from '@lucide/astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { campuses, site, telHref } from '../../data/site';
+import HubSpotForm from '../../components/HubSpotForm.astro';
+import { campuses, directionsHref, site, telHref } from '../../data/site';
 ---
-<BaseLayout title={`Plan a Campus Visit | ${site.name}`} description="Schedule a tour of an AmeriSchools campus.">
-  <section class="py-14">
+<BaseLayout title={`Plan a Campus Visit | ${site.name}`} description="Request a tour of an AmeriSchools Academy campus in Tucson or Yuma, Arizona. Tuition-free K–8 public charter schools.">
+  <section class="bg-sky-50 py-12 lg:py-16">
     <div class="container-site">
       <div class="mx-auto max-w-3xl text-center">
-      <p class="eyebrow">Get to know us</p>
-      <h1 class="mt-2 text-4xl font-bold">Plan a campus visit</h1>
-      <p class="mt-3 text-lg text-muted">Call the campus office and our team will set up a time for you to tour classrooms and meet staff.</p>
+        <p class="eyebrow">Get to know us</p>
+        <h1 class="mt-2 text-4xl font-bold sm:text-5xl">Plan a campus visit</h1>
+        <p class="mt-3 text-lg text-muted">Tell us when works for your family and our team will set up a time for you to tour classrooms and meet staff.</p>
       </div>
-      <ul class="campus-grid mt-8">
-        {campuses.map((c) => (
-          <li id={c.slug} class="card p-6 text-center">
-            <h2 class="text-xl font-semibold">{c.name} <span class="text-base font-normal text-muted">({c.grades})</span></h2>
-            <p class="mt-1 text-sm text-muted">{c.street}, {c.cityStateZip}</p>
-            <a href={telHref(c.phone)} class="link-arrow mt-3 justify-center"><Phone class="h-4 w-4" aria-hidden="true" />{c.phone}</a>
-          </li>
-        ))}
-      </ul>
+    </div>
+  </section>
+
+  <section class="py-12 lg:py-16" aria-labelledby="tour-form-heading">
+    <div class="container-site grid gap-10 lg:grid-cols-[3fr_2fr] lg:gap-14">
+      <div>
+        <h2 id="tour-form-heading" class="text-3xl font-bold">Request a tour</h2>
+        <p class="mt-2 text-muted">Choose your campus and a few times that work. We'll confirm your visit by phone or email.</p>
+        <HubSpotForm kind="tour" class="mt-6" />
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold">Prefer to call?</h2>
+        <ul class="mt-5 space-y-4">
+          {campuses.map((c) => (
+            <li id={c.slug} class="card p-5">
+              <h3 class="text-xl font-semibold">{c.name} <span class="text-base font-normal text-muted">(Grades {c.grades})</span></h3>
+              <a href={directionsHref(c)} target="_blank" rel="noopener" class="mt-1 flex items-start gap-2 text-sm text-muted hover:underline">
+                <MapPin class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{c.street}, {c.cityStateZip}<span class="sr-only">(opens Google Maps)</span>
+              </a>
+              <div class="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2">
+                <a href={telHref(c.phone)} class="link-arrow"><Phone class="h-4 w-4" aria-hidden="true" />{c.phone}</a>
+                <a href={`/campuses/${c.slug}/tours/`} class="link-arrow text-sm">Open house times <ArrowRight class="h-4 w-4" aria-hidden="true" /></a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 </BaseLayout>

@@ -75,7 +75,28 @@ const EXTRA_REDIRECTS = {
   '/enroll/': '/admissions/',
   '/pre-k-capstone-quest-academy-tucson-inc/': CAPSTONE,
   '/pre-k-capstone-quest-academy-inc-yuma-north/': CAPSTONE,
+  // Old WordPress sitemaps (registered in Search Console) → the new sitemap index.
+  '/sitemap.xml': '/sitemap-index.xml',
+  '/sitemap.html': '/sitemap-index.xml',
+  '/page-sitemap.xml': '/sitemap-index.xml',
+  '/post-sitemap.xml': '/sitemap-index.xml',
+  '/sitemap-misc.xml': '/sitemap-index.xml',
+  // Blog posts (2016–2021, not migrated) and WordPress archives. Splats cover every post URL.
+  '/2016/*': '/about/',
+  '/2017/*': '/about/',
+  '/2018/*': '/about/',
+  '/2019/*': '/about/',
+  '/2020/*': '/about/',
+  '/2021/*': '/about/',
+  '/category/*': '/',
+  '/tag/*': '/',
+  '/author/*': '/',
+  '/feed/': '/',
+  '/wp-admin/*': '/',
+  '/wp-login.php': '/',
 };
+// The Phoenix campus closed; its old URLs go straight to the campus overview (no redirect chain).
+const PHOENIX_TO = '/campuses/';
 
 // Pages with no content on the old site are redirected here instead of published blank.
 const EMPTY_FALLBACK = {
@@ -446,6 +467,7 @@ async function main() {
     JSON.stringify(pageIndex.sort((a, b) => a.legacy.localeCompare(b.legacy)), null, 2) + '\n',
   );
   const redirectLines = [...redirects.entries()]
+    .map(([from, to]) => [from, to.startsWith('/campuses/phoenix/') ? PHOENIX_TO : to])
     .filter(([from, to]) => from !== to)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([from, to]) => `${from} ${to} 301`);

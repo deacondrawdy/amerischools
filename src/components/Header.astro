@@ -56,8 +56,6 @@ const ext = (href: string) => (isExternal(href) ? { target: '_blank', rel: 'noop
 
     <div class="hidden items-center gap-4 lg:flex">
       <a href={site.currentFamiliesUrl} class="text-sm font-medium text-brand-700 hover:underline">Current Families</a>
-      <span class="h-5 w-px bg-line" aria-hidden="true"></span>
-      <a href="/es/" lang="es" hreflang="es" class="text-sm font-medium text-brand-700 hover:underline">Español</a>
       <a href={site.applyUrl} class="ml-2 rounded-md border-2 border-brand-600 px-5 py-2 font-display text-lg font-semibold text-brand-700 hover:bg-sky-50">
         Apply
       </a>
@@ -98,7 +96,6 @@ const ext = (href: string) => (isExternal(href) ? { target: '_blank', rel: 'noop
         ),
       )}
       <li><a href={site.currentFamiliesUrl} class="block py-3 text-brand-700">Current Families</a></li>
-      <li><a href="/es/" lang="es" hreflang="es" class="block py-3 text-brand-700">Español</a></li>
       <li class="py-3"><a href={site.applyUrl} class="btn-primary w-full">Apply</a></li>
     </ul>
   </nav>
