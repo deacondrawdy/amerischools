@@ -1,0 +1,33 @@
+---
+import { ArrowRight, Phone } from '@lucide/astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { campuses, site, telHref } from '../data/site';
+
+Astro.response.status = 404;
+const links = [
+  { label: 'Find a campus', href: '/campuses/' },
+  { label: 'Enroll', href: '/admissions/' },
+  { label: 'Plan a visit', href: '/visit/' },
+  { label: 'Current families', href: site.currentFamiliesUrl },
+];
+---
+<BaseLayout title={`Page not found | ${site.name}`} description="The page you were looking for isn't here.">
+  <section class="bg-sky-50 py-16 lg:py-24">
+    <div class="container-site text-center">
+      <p class="eyebrow">Page not found</p>
+      <h1 class="mt-2 text-4xl font-bold sm:text-5xl">We couldn't find that page.</h1>
+      <p class="mx-auto mt-3 max-w-xl text-lg text-muted">It may have moved when we updated our website. These are good places to start:</p>
+      <ul class="mt-8 flex flex-wrap justify-center gap-3">
+        {links.map((l) => (
+          <li><a href={l.href} class="btn-outline">{l.label} <ArrowRight class="h-4 w-4" aria-hidden="true" /></a></li>
+        ))}
+      </ul>
+      <p class="mt-10 text-muted">Or call us:</p>
+      <ul class="mt-2 flex flex-wrap justify-center gap-x-8 gap-y-2">
+        {campuses.map((c) => (
+          <li>{c.name}: <a href={telHref(c.phone)} class="inline-flex items-center gap-1 font-semibold text-brand-700 hover:underline"><Phone class="h-4 w-4" aria-hidden="true" />{c.phone}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

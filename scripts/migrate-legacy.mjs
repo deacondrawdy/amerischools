@@ -2,7 +2,7 @@
 // One-time (re-runnable) migration of amerischools.org (WordPress) into this repo.
 //   node scripts/migrate-legacy.mjs
 // Writes: src/content/pages/**, src/data/legacy/{menus,documents,disclosures,pages}.json,
-//         public/documents/**, public/_redirects
+//         files/documents/** (served by src/pages/documents/[...path].ts), public/_redirects
 // Page text lives in the theme's rendered HTML (the REST `content` field is empty),
 // so we crawl the rendered pages. The site's firewall rejects some HTTP clients, so we use curl.
 
@@ -21,7 +21,7 @@ const ORIGIN = 'https://amerischools.org';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT_PAGES = path.join(ROOT, 'src/content/pages');
 const OUT_DATA = path.join(ROOT, 'src/data/legacy');
-const OUT_DOCS = path.join(ROOT, 'public/documents');
+const OUT_DOCS = path.join(ROOT, 'files/documents');
 const UA = 'AmeriSchools-site-migration/1.0 (+https://github.com/deacondrawdy/amerischools)';
 const CAPSTONE = 'https://capstonequestacademy.com/';
 
@@ -426,7 +426,7 @@ async function main() {
   await mkdir(OUT_DOCS, { recursive: true });
   let bytes = 0;
   await pool([...docs.values()], 4, async (d) => {
-    const dest = path.join(ROOT, 'public', d.path);
+    const dest = path.join(ROOT, 'files', d.path);
     await mkdir(path.dirname(dest), { recursive: true });
     try {
       await stat(dest);

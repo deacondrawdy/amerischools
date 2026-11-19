@@ -3,6 +3,7 @@
 // branded placeholder so layouts can be reviewed before photography exists.
 import { Image } from 'astro:assets';
 import { photos, type Photo, type PhotoKey } from '../data/photos';
+import { photoAlt, photoOverride } from '../lib/staff/store';
 
 interface Props {
   photo?: PhotoKey;
@@ -23,11 +24,29 @@ const tones = {
 };
 // Never upscale: offer standard widths below the original, plus the original itself.
 const widths = p ? [480, 800, 1200, 1600].filter((w) => w < p.src.width).concat(p.src.width) : [];
+// A photo Marketing replaced at /staff is served from storage; alt text edits apply to both.
+const replaced = photo ? photoOverride(photo) : undefined;
+const altText = alt ?? (photo ? photoAlt(photo) : undefined);
+const v = replaced ? Date.parse(replaced.updatedAt) : 0;
+const fileUrl = (w: number) => `/files/photos/${photo}/${w}.webp?v=${v}`;
 ---
-{p ? (
+{replaced ? (
+  <img
+    src={fileUrl(replaced.widths.find((w) => w >= 800) ?? replaced.widths.at(-1)!)}
+    srcset={replaced.widths.map((w) => `${fileUrl(w)} ${w}w`).join(', ')}
+    sizes={sizes}
+    alt={altText}
+    width={replaced.width}
+    height={replaced.height}
+    loading={loading}
+    decoding="async"
+    fetchpriority={loading === 'eager' ? 'high' : null}
+    class:list={['h-full w-full object-cover', className]}
+  />
+) : p ? (
   <Image
     src={p.src}
-    alt={alt ?? p.alt}
+    alt={altText ?? p.alt}
     widths={widths}
     sizes={sizes}
     loading={loading}

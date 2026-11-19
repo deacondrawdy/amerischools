@@ -9,12 +9,10 @@ import { campuses, directionsHref, site, telHref, type Campus } from '../../../d
 import { contact, type CampusContact } from '../../../data/contact';
 import { noWidow } from '../../../lib/text';
 
-export function getStaticPaths() {
-  return campuses
-    .filter((c) => contact[c.slug])
-    .map((campus) => ({ params: { slug: campus.slug }, props: { campus, info: contact[campus.slug] } }));
-}
-const { campus, info } = Astro.props as { campus: Campus; info: CampusContact };
+const found = campuses.find((c) => c.slug === Astro.params.slug && contact[c.slug]);
+if (!found) return Astro.rewrite('/404/');
+const campus: Campus = found;
+const info: CampusContact = contact[campus.slug];
 const base = `/campuses/${campus.slug}`;
 const address = `${campus.street}, ${campus.cityStateZip}`;
 const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(`AmeriSchools Academy, ${address}`)}&z=15&output=embed`;

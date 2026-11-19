@@ -1,0 +1,5 @@
+# Same install step as the Capstone Quest site on Railway: the build image sets npm's
+# `production` config, which would skip devDependencies the build needs, and its npm can be
+# older than the one that wrote package-lock.json (`npm ci` then fails on lockfile drift).
+[phases.install]
+cmds = ["npm install --include=dev --no-audit --no-fund"]

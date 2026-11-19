@@ -15,12 +15,10 @@ import { campuses, site, type Campus } from '../../../data/site';
 import { curriculum, type CurriculumIcon, type CurriculumPage } from '../../../data/curriculum';
 import { noWidow } from '../../../lib/text';
 
-export function getStaticPaths() {
-  return campuses
-    .filter((c) => curriculum[c.slug])
-    .map((campus) => ({ params: { slug: campus.slug }, props: { campus, page: curriculum[campus.slug] } }));
-}
-const { campus, page } = Astro.props as { campus: Campus; page: CurriculumPage };
+const found = campuses.find((c) => c.slug === Astro.params.slug && curriculum[c.slug]);
+if (!found) return Astro.rewrite('/404/');
+const campus: Campus = found;
+const page: CurriculumPage = curriculum[campus.slug];
 const base = `/campuses/${campus.slug}`;
 
 const icons: Record<CurriculumIcon, typeof Star> = {
@@ -154,7 +152,7 @@ const { approach, pbl, community } = page;
               <div class="absolute inset-0"><ImageSlot photo={t.photo} sizes="(min-width: 768px) 50vw, 100vw" /></div>
             </div>
             <div class="panel-copy flex flex-col justify-center p-8 lg:p-12">
-              <p class="font-display text-5xl leading-none font-bold text-sun-500">{pad(i + 1)}</p>
+              <p aria-hidden="true" class="font-display text-5xl leading-none font-bold text-amber-700">{pad(i + 1)}</p>
               <h3 class="mt-3 text-2xl font-bold sm:text-3xl">{t.label}</h3>
               <p class="mt-4 text-lg leading-relaxed text-muted">{t.body}</p>
             </div>

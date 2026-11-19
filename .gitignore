@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .gstack/
+
+# /staff edits when running locally (production uses the Railway volume)
+.data/

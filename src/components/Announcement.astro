@@ -1,0 +1,22 @@
+---
+// Site-wide announcement bar (closures, enrollment deadlines, events), edited at /staff.
+import { Megaphone } from '@lucide/astro';
+import { getStore } from '../lib/staff/store';
+
+const a = getStore().announcement;
+const show = a.enabled && a.text.trim();
+const external = /^https?:\/\//.test(a.linkUrl);
+---
+{show && (
+  <aside aria-label="Announcement" class="bg-sun-400 text-navy-950">
+    <p class="container-site flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-2.5 text-center text-sm font-medium sm:text-base">
+      <Megaphone class="h-5 w-5 shrink-0" aria-hidden="true" />
+      <span>{a.text}</span>
+      {a.linkUrl && (
+        <a href={a.linkUrl} class="font-semibold underline underline-offset-4 hover:no-underline" {...(external ? { target: '_blank', rel: 'noopener' } : {})}>
+          {a.linkLabel || 'Learn more'}{external && <span class="sr-only"> (opens in a new tab)</span>}
+        </a>
+      )}
+    </p>
+  </aside>
+)}

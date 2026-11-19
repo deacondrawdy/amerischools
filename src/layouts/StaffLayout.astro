@@ -1,0 +1,104 @@
+---
+// Layout for the /staff editor. No marketing tags (staff visits must not count as traffic)
+// and not indexed by search engines.
+import '../styles/global.css';
+import { CircleAlert, CircleCheck } from '@lucide/astro';
+import Logo from '../components/Logo.astro';
+
+interface Props {
+  title: string;
+  signedIn?: boolean;
+}
+const { title, signedIn = false } = Astro.props;
+const ok = Astro.url.searchParams.get('ok');
+const err = Astro.url.searchParams.get('err');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} | AmeriSchools Staff</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+  <body class="min-h-screen bg-slate-50">
+    <header class="border-b border-line bg-white">
+      <div class="container-site flex flex-wrap items-center justify-between gap-4 py-3">
+        <div class="flex items-center gap-4">
+          <Logo />
+          <span class="rounded-full bg-sky-100 px-3 py-1 text-sm font-semibold text-brand-700">Website editor</span>
+        </div>
+        {signedIn && (
+          <nav aria-label="Editor" class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium">
+            <a href="/staff/" class="hover:underline">Editor home</a>
+            <a href="/staff/help/" class="hover:underline">How-to guide</a>
+            <a href="/" target="_blank" rel="noopener" class="hover:underline">View website<span class="sr-only"> (opens in a new tab)</span></a>
+            <form method="post" action="/staff/api/logout/"><button class="text-brand-700 hover:underline">Sign out</button></form>
+          </nav>
+        )}
+      </div>
+    </header>
+    <main id="main" class="container-site py-8">
+      {ok && (
+        <p role="status" class="mb-6 flex items-center gap-2 rounded-lg border border-green-300 bg-green-50 px-4 py-3 text-green-900">
+          <CircleCheck class="h-5 w-5 shrink-0" aria-hidden="true" />{ok}
+        </p>
+      )}
+      {err && (
+        <p role="alert" class="mb-6 flex items-center gap-2 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-red-900">
+          <CircleAlert class="h-5 w-5 shrink-0" aria-hidden="true" />{err}
+        </p>
+      )}
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  .staff-input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line, #d7dee8);
+    background: white;
+    padding: 0.55rem 0.75rem;
+    font-size: 1rem;
+  }
+  .staff-input:focus {
+    outline: 3px solid color-mix(in srgb, var(--color-brand-500, #2f7fd6) 40%, transparent);
+    border-color: var(--color-brand-500, #2f7fd6);
+  }
+  .staff-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .staff-hint {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-muted, #5b6b7f);
+    margin-top: 0.25rem;
+  }
+  .staff-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 0.5rem;
+    background: var(--color-brand-600, #1f6fc5);
+    color: white;
+    font-weight: 600;
+    padding: 0.55rem 1.1rem;
+  }
+  .staff-btn:hover { background: var(--color-brand-700, #175aa3); }
+  .staff-btn-quiet {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line, #d7dee8);
+    background: white;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+  }
+  .staff-btn-quiet:hover { background: #f1f5f9; }
+</style>

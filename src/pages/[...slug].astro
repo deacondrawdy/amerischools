@@ -1,31 +1,29 @@
 ---
-// Renders every page migrated from the old site (src/content/pages, excluding _legacy/).
-import { getCollection, render } from 'astro:content';
+// Renders every page migrated from the old site (src/content/pages, excluding _legacy/), and
+// pages Marketing created at /staff. A page edited at /staff shows the edited Markdown instead.
+import { render } from 'astro:content';
+import { marked } from 'marked';
 import ContentLayout from '../layouts/ContentLayout.astro';
 import HubSpotForm from '../components/HubSpotForm.astro';
 import { campuses } from '../data/site';
+import { findPage } from '../lib/pages';
+import { getStore } from '../lib/staff/store';
 
-export async function getStaticPaths() {
-  // Pages rebuilt by hand under src/pages take over their migrated Markdown.
-  const handBuilt = new Set(['careers', 'about', 'admissions/interest-form']);
-  // The Phoenix campus is no longer offered; its old pages redirect (see astro.config.mjs).
-  // Campus curriculum and contact pages are hand-built too (src/pages/campuses/[slug]/).
-  const pages = (await getCollection('pages')).filter(
-    (p) => !handBuilt.has(p.id) && p.data.campus !== 'phoenix' && !/\/(curriculum|contact)$/.test(p.id),
-  );
-  return pages.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
-}
+const id = (Astro.params.slug ?? '').replace(/\/+$/, '');
+const page = id ? await findPage(id) : undefined;
+if (!page) return Astro.rewrite('/404/');
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const edit = getStore().pages[page.id];
+const Content = !edit && page.entry ? (await render(page.entry)).Content : undefined;
+const html = edit ? await marked.parse(edit.markdown) : '';
 // Old titles repeat the campus name ("Tucson Campus Calendar"); the breadcrumb already says it.
 const campusPrefix = /^(Phoenix( Camelback)?|Tucson( Campus)?|(North )?Yuma( North| Middle| South)?)\s+/i;
 // Campus tour pages get the HubSpot tour request form under the open-house details.
-const tourCampus = entry.id.endsWith('/tours') ? campuses.find((c) => c.slug === entry.data.campus) : undefined;
-const title = entry.data.campus ? entry.data.title.replace(campusPrefix, '').replace(/^Campus\s+/i, '') : entry.data.title;
+const tourCampus = page.id.endsWith('/tours') ? campuses.find((c) => c.slug === page.campus) : undefined;
+const title = page.campus ? page.title.replace(campusPrefix, '').replace(/^Campus\s+/i, '') : page.title;
 ---
-<ContentLayout title={title} campusSlug={entry.data.campus}>
-  <Content />
+<ContentLayout title={title} description={edit?.description} campusSlug={page.campus}>
+  {Content ? <Content /> : <Fragment set:html={html} />}
   {tourCampus && (
     <section aria-labelledby="tour-form-heading" class="not-prose mt-10">
       <h2 id="tour-form-heading" class="text-3xl font-bold">Request a tour</h2>

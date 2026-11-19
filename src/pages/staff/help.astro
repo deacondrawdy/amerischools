@@ -1,0 +1,124 @@
+---
+// Written how-to steps for the Marketing team (Regina's list: "written how-to steps").
+import StaffLayout from '../../layouts/StaffLayout.astro';
+import { isStaff } from '../../lib/staff/session';
+
+if (!isStaff(Astro.cookies)) return Astro.redirect('/staff/');
+const toc = [
+  ['sign-in', 'Signing in'],
+  ['announcement', 'Post an announcement'],
+  ['campus', 'Change a campus phone, address or headline'],
+  ['pages', 'Edit a page'],
+  ['new-page', 'Add a new page'],
+  ['photos', 'Replace a photo'],
+  ['alt-text', 'Writing photo descriptions'],
+  ['pdfs', 'Replace a PDF (menus, calendars, packets)'],
+  ['formatting', 'Text formatting cheat sheet'],
+  ['undo', 'Undoing a change'],
+  ['not-here', "What isn't in the editor"],
+];
+---
+<StaffLayout title="How-to guide" signedIn>
+  <div class="grid gap-8 lg:grid-cols-[16rem_1fr]">
+    <nav aria-label="Guide sections" class="lg:sticky lg:top-6 lg:self-start">
+      <ol class="space-y-1 text-sm">
+        {toc.map(([id, label]) => <li><a href={`#${id}`} class="block rounded px-2 py-1 hover:bg-white">{label}</a></li>)}
+      </ol>
+    </nav>
+    <article class="prose prose-lg max-w-3xl rounded-2xl border border-line bg-white p-8 shadow-sm prose-headings:scroll-mt-6 prose-headings:font-display prose-a:text-brand-700">
+      <h1>Website editor: how-to guide</h1>
+      <p>Everything you save goes live on amerischools.org right away. There is no separate "publish" step, so read your change once on the website after saving.</p>
+
+      <h2 id="sign-in">Signing in</h2>
+      <ol>
+        <li>Go to <strong>amerischools.org/staff/</strong>.</li>
+        <li>Enter the team password and choose <strong>Sign in</strong>. You stay signed in for 12 hours on that device.</li>
+        <li>Five wrong tries locks sign-in for 15 minutes. If the password needs changing, ask your web developer; changing it signs everyone out.</li>
+      </ol>
+
+      <h2 id="announcement">Post an announcement</h2>
+      <p>The announcement bar is a yellow strip at the top of every page, for closures, enrollment deadlines or events.</p>
+      <ol>
+        <li>On the editor home, find <strong>Announcement bar</strong>.</li>
+        <li>Type the message (one sentence works best). Optionally add link text, like "Apply now", and a link address, like <code>/admissions/</code>.</li>
+        <li>Tick <strong>Show the announcement on the website</strong> and choose <strong>Save announcement</strong>.</li>
+        <li>To take it down, untick the box and save.</li>
+      </ol>
+
+      <h2 id="campus">Change a campus phone, address or headline</h2>
+      <ol>
+        <li>Under <strong>Campus details</strong>, open the campus.</li>
+        <li>Grey text in a box is the current wording. Type in a box only what you want to change; leave the rest empty.</li>
+        <li>Choose <strong>Save</strong>. The phone and address update everywhere they appear: campus pages, the footer, the visit page and the contact page.</li>
+      </ol>
+
+      <h2 id="pages">Edit a page</h2>
+      <ol>
+        <li>Under <strong>Pages</strong>, find the page (they're grouped by district and campus) and choose <strong>Edit</strong>.</li>
+        <li>Change the title, the text, or the search description (the sentence Google may show under the title).</li>
+        <li>The <strong>Preview</strong> beside the text shows how it will look.</li>
+        <li>Choose <strong>Save page</strong>. Use the address link at the top to see it live.</li>
+      </ol>
+
+      <h2 id="new-page">Add a new page</h2>
+      <ol>
+        <li>Under <strong>Pages</strong>, choose <strong>New page</strong>.</li>
+        <li>Give it a title. The web address is made from the title unless you type your own.</li>
+        <li>On the next screen, write the text and save.</li>
+        <li>New pages are not in the menu. Link to them from another page or the announcement bar.</li>
+      </ol>
+
+      <h2 id="photos">Replace a photo</h2>
+      <ol>
+        <li>Under <strong>Photos</strong>, find the photo. Photos marked <em>AI placeholder</em> are stand-ins and should be replaced with real campus photos first.</li>
+        <li>Choose the file (JPG, PNG or WebP, up to 25 MB), then <strong>Replace</strong>. Wide (landscape) photos at least 1600 pixels across look best.</li>
+        <li>The site resizes the photo for phones and computers automatically.</li>
+        <li>Check that the description still matches the new photo, and update it if not.</li>
+        <li>iPhone photos in HEIC format must be exported as JPG first (in Photos: Share, then Save to Files as JPG, or email the photo to yourself).</li>
+        <li>Only use photos of students whose families have given photo permission.</li>
+      </ol>
+
+      <h2 id="alt-text">Writing photo descriptions</h2>
+      <p>Each photo needs a short description (alt text). Screen readers read it aloud to visitors who are blind, and Google and AI search tools use it to understand the page. This is part of keeping the site ADA accessible.</p>
+      <ul>
+        <li>Say what the photo shows, in one plain sentence: "Two students building a robot in science class."</li>
+        <li>Don't start with "Image of" or "Photo of".</li>
+        <li>Don't name students.</li>
+      </ul>
+
+      <h2 id="pdfs">Replace a PDF (menus, calendars, packets)</h2>
+      <ol>
+        <li>Under <strong>PDFs</strong>, open the district or campus group.</li>
+        <li>Find the document, choose the new PDF, then <strong>Replace</strong>.</li>
+        <li>The web address stays the same, so every link to it (on the site, in emails, in Google) opens the new file.</li>
+        <li>PDFs should be "real" PDFs saved from Word, Canva or Google Docs, not scans, so screen readers can read them.</li>
+      </ol>
+
+      <h2 id="formatting">Text formatting cheat sheet</h2>
+      <p>Pages use simple text formatting called Markdown:</p>
+      <table>
+        <thead><tr><th>Type this</th><th>To get</th></tr></thead>
+        <tbody>
+          <tr><td><code>## Open houses</code></td><td>A section heading</td></tr>
+          <tr><td><code>### Spring dates</code></td><td>A smaller heading</td></tr>
+          <tr><td><code>**Tuesday**</code></td><td><strong>Bold</strong></td></tr>
+          <tr><td><code>- First item</code></td><td>A bulleted list (one item per line)</td></tr>
+          <tr><td><code>1. First step</code></td><td>A numbered list</td></tr>
+          <tr><td><code>[Campus calendar](/campuses/tucson/calendar/)</code></td><td>A link</td></tr>
+          <tr><td>An empty line</td><td>A new paragraph</td></tr>
+        </tbody>
+      </table>
+      <p>To link a PDF: open the PDFs section, right-click the document's name, choose "Copy link address", and paste it in the link's parentheses.</p>
+
+      <h2 id="undo">Undoing a change</h2>
+      <ul>
+        <li><strong>Pages:</strong> "Put the original text back" restores the page as it was when the site launched.</li>
+        <li><strong>Photos and PDFs:</strong> "Put the original back" restores the original file.</li>
+        <li><strong>Campus details:</strong> empty the box and save to return to the original wording.</li>
+      </ul>
+
+      <h2 id="not-here">What isn't in the editor</h2>
+      <p>The homepage, About, Careers and curriculum pages are custom-designed layouts. Changes to those, to the menus, or to tracking and forms go through your web developer.</p>
+    </article>
+  </div>
+</StaffLayout>

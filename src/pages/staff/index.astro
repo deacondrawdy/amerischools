@@ -1,0 +1,274 @@
+---
+// The website editor (same design as Capstone Quest's /staff): one shared password, then
+// sections for the announcement bar, campus details, pages, photos and PDFs.
+import { FileText, Image as ImageIcon, LayoutList, Megaphone, Pencil, Plus, RotateCcw, School, TriangleAlert, Upload } from '@lucide/astro';
+import StaffLayout from '../../layouts/StaffLayout.astro';
+import ImageSlot from '../../components/ImageSlot.astro';
+import { campuses } from '../../data/site';
+import { photos, type PhotoKey } from '../../data/photos';
+import { legacyDocuments } from '../../data/legacy';
+import { sitePages } from '../../lib/pages';
+import { isStaff, staffConfigured } from '../../lib/staff/session';
+import { formatBytes, getStore, originalCampusText, originalSitePhoneText, photoAlt, storageProblem } from '../../lib/staff/store';
+
+const signedIn = isStaff(Astro.cookies);
+const store = getStore();
+const problem = storageProblem();
+const pages = signedIn ? await sitePages() : [];
+const when = (iso?: string) =>
+  iso ? new Date(iso).toLocaleString('en-US', { timeZone: 'America/Phoenix', dateStyle: 'medium', timeStyle: 'short' }) : '';
+
+const campusName = (slug?: string | null) => campuses.find((c) => c.slug === slug)?.name ?? (slug === 'phoenix' ? 'Phoenix (closed)' : 'District');
+const pageGroups = [
+  { label: 'District pages', items: pages.filter((p) => !p.campus && !p.custom) },
+  ...campuses.map((c) => ({ label: `${c.name} pages`, items: pages.filter((p) => p.campus === c.slug) })),
+  { label: 'Pages you created', items: pages.filter((p) => p.custom) },
+];
+const docGroups = [...new Set(legacyDocuments.map((d) => d.campus ?? 'district'))]
+  .filter((g) => g !== 'phoenix')
+  .map((g) => ({ label: g === 'district' ? 'District' : campusName(g), docs: legacyDocuments.filter((d) => (d.campus ?? 'district') === g).sort((a, b) => a.title.localeCompare(b.title)) }));
+const photoKeys = Object.keys(photos) as PhotoKey[];
+const fields = [
+  { name: 'headline1', label: 'Headline, line 1' },
+  { name: 'headline2', label: 'Headline, line 2' },
+  { name: 'intro', label: 'Intro sentence', long: true },
+  { name: 'phone', label: 'Phone number' },
+  { name: 'street', label: 'Street address' },
+  { name: 'cityStateZip', label: 'City, state, ZIP' },
+] as const;
+const sections = [
+  { id: 'announcement', label: 'Announcement bar', icon: Megaphone },
+  { id: 'campuses', label: 'Campus details', icon: School },
+  { id: 'pages', label: 'Pages', icon: LayoutList },
+  { id: 'photos', label: 'Photos', icon: ImageIcon },
+  { id: 'documents', label: 'PDFs', icon: FileText },
+];
+---
+<StaffLayout title={signedIn ? 'Website editor' : 'Sign in'} signedIn={signedIn}>
+  {!signedIn ? (
+    <section class="mx-auto max-w-md rounded-2xl border border-line bg-white p-8 shadow-sm">
+      <h1 class="text-3xl font-bold">Website editor</h1>
+      <p class="mt-2 text-muted">For the AmeriSchools Marketing team. Sign in to update text, pages, photos and PDFs on amerischools.org.</p>
+      {staffConfigured() ? (
+        <form method="post" action="/staff/api/login/" class="mt-6 space-y-4">
+          <label class="block">
+            <span class="staff-label">Password</span>
+            <input class="staff-input" type="password" name="password" autocomplete="current-password" required autofocus />
+          </label>
+          <button class="staff-btn w-full justify-center">Sign in</button>
+        </form>
+      ) : (
+        <p class="mt-6 rounded-lg bg-amber-50 p-4 text-amber-900">The editor password has not been set up yet. Your web developer needs to set STAFF_PASSWORD on the server.</p>
+      )}
+    </section>
+  ) : (
+    <div class="grid gap-8 lg:grid-cols-[14rem_1fr]">
+      <nav aria-label="Editor sections" class="lg:sticky lg:top-6 lg:self-start">
+        <ul class="flex flex-wrap gap-2 lg:flex-col">
+          {sections.map(({ id, label, icon: Icon }) => (
+            <li><a href={`#${id}`} class="flex items-center gap-2 rounded-lg px-3 py-2 font-medium hover:bg-white"><Icon class="h-5 w-5 text-brand-600" aria-hidden="true" />{label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="space-y-12">
+        <div>
+          <h1 class="text-3xl font-bold">Website editor</h1>
+          <p class="mt-1 text-muted">Changes go live on the website as soon as you save. Need help? Read the <a href="/staff/help/" class="text-brand-700 underline">how-to guide</a>.</p>
+          {problem && (
+            <p role="alert" class="mt-4 flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-900">
+              <TriangleAlert class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />{problem}
+            </p>
+          )}
+        </div>
+
+        <!-- Announcement -->
+        <section id="announcement" class="scroll-mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm" aria-labelledby="announcement-h">
+          <h2 id="announcement-h" class="text-2xl font-bold">Announcement bar</h2>
+          <p class="mt-1 text-muted">A yellow bar across the top of every page: closures, enrollment deadlines, events. Turn it off when it's no longer needed.</p>
+          <form method="post" action="/staff/api/announcement/" class="mt-5 grid gap-4">
+            <input type="hidden" name="back" value="/staff/#announcement" />
+            <label class="flex items-center gap-3 font-semibold">
+              <input type="checkbox" name="enabled" class="h-5 w-5" checked={store.announcement.enabled} /> Show the announcement on the website
+            </label>
+            <label><span class="staff-label">Message</span>
+              <input class="staff-input" name="text" maxlength="300" value={store.announcement.text} placeholder="Now enrolling for 2027–28. Seats are limited." />
+            </label>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label><span class="staff-label">Link text (optional)</span>
+                <input class="staff-input" name="linkLabel" maxlength="60" value={store.announcement.linkLabel} placeholder="Apply now" />
+              </label>
+              <label><span class="staff-label">Link address (optional)</span>
+                <input class="staff-input" name="linkUrl" maxlength="300" value={store.announcement.linkUrl} placeholder="/admissions/" />
+                <span class="staff-hint">A page on this site (like /admissions/) or a full web address.</span>
+              </label>
+            </div>
+            <div><button class="staff-btn">Save announcement</button></div>
+          </form>
+        </section>
+
+        <!-- Campus details -->
+        <section id="campuses" class="scroll-mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm" aria-labelledby="campuses-h">
+          <h2 id="campuses-h" class="text-2xl font-bold">Campus details</h2>
+          <p class="mt-1 text-muted">The headline and intro at the top of each campus page, and the phone number and address shown everywhere on the site. Leave a box empty to use the original wording (shown in grey).</p>
+          <div class="mt-5 space-y-4">
+            {campuses.map((c) => {
+              const o = originalCampusText(c.slug)!;
+              const saved = store.campuses[c.slug] ?? {};
+              return (
+                <details class="rounded-xl border border-line">
+                  <summary class="cursor-pointer px-4 py-3 text-lg font-semibold">{c.name}</summary>
+                  <form method="post" action="/staff/api/campus/" class="grid gap-4 px-4 pb-4 sm:grid-cols-2">
+                    <input type="hidden" name="back" value="/staff/#campuses" />
+                    <input type="hidden" name="slug" value={c.slug} />
+                    {fields.map((f) => (
+                      <label class:list={{ 'sm:col-span-2': 'long' in f }}>
+                        <span class="staff-label">{f.label}</span>
+                        {'long' in f ? (
+                          <textarea class="staff-input" name={f.name} rows="2" placeholder={o[f.name]}>{saved[f.name] ?? ''}</textarea>
+                        ) : (
+                          <input class="staff-input" name={f.name} value={saved[f.name] ?? ''} placeholder={o[f.name]} />
+                        )}
+                      </label>
+                    ))}
+                    <div class="sm:col-span-2"><button class="staff-btn">Save {c.name}</button></div>
+                  </form>
+                </details>
+              );
+            })}
+            <form method="post" action="/staff/api/site-phone/" class="flex flex-wrap items-end gap-3 rounded-xl border border-line p-4">
+              <input type="hidden" name="back" value="/staff/#campuses" />
+              <label class="min-w-60 flex-1"><span class="staff-label">District phone number</span>
+                <input class="staff-input" name="phone" value={store.sitePhone ?? ''} placeholder={originalSitePhoneText()} />
+              </label>
+              <button class="staff-btn">Save</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Pages -->
+        <section id="pages" class="scroll-mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm" aria-labelledby="pages-h">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 id="pages-h" class="text-2xl font-bold">Pages</h2>
+              <p class="mt-1 text-muted">Edit the text of calendars, staff lists, programs, tours, policies and more, or add a new page.</p>
+            </div>
+            <a href="/staff/new-page/" class="staff-btn"><Plus class="h-5 w-5" aria-hidden="true" />New page</a>
+          </div>
+          <div class="mt-5 space-y-6">
+            {pageGroups.filter((g) => g.items.length).map((g) => (
+              <div>
+                <h3 class="text-sm font-semibold tracking-wide text-muted uppercase">{g.label}</h3>
+                <ul class="mt-2 divide-y divide-line rounded-xl border border-line">
+                  {g.items.map((p) => (
+                    <li class="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                      <div>
+                        <span class="font-medium">{p.title}</span>
+                        <span class="ml-2 text-sm text-muted">/{p.id}/</span>
+                        {p.edited && !p.custom && <span class="ml-2 rounded-full bg-sky-100 px-2 py-0.5 text-xs font-semibold text-brand-700">Edited {when(store.pages[p.id]?.updatedAt)}</span>}
+                      </div>
+                      <a href={`/staff/pages/${p.id}/`} class="staff-btn-quiet"><Pencil class="h-4 w-4" aria-hidden="true" />Edit<span class="sr-only"> {p.title}</span></a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <!-- Photos -->
+        <section id="photos" class="scroll-mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm" aria-labelledby="photos-h">
+          <h2 id="photos-h" class="text-2xl font-bold">Photos</h2>
+          <p class="mt-1 text-muted">Replace any photo on the site with a JPG, PNG or WebP (up to 25 MB; landscape photos at least 1600 pixels wide look best). Every photo needs a short description for visitors who use screen readers.</p>
+          <ul class="mt-5 grid gap-5 md:grid-cols-2">
+            {photoKeys.map((key) => {
+              const replaced = store.photos[key];
+              const p = photos[key] as { illustrative?: boolean };
+              return (
+                <li id={`photo-${key}`} class="scroll-mt-6 overflow-hidden rounded-xl border border-line">
+                  <div class="aspect-[16/9] bg-sky-50"><ImageSlot photo={key} sizes="(min-width: 768px) 30vw, 100vw" /></div>
+                  <div class="space-y-3 p-4">
+                    <p class="text-sm text-muted">
+                      {replaced ? <>Replaced {when(replaced.updatedAt)} with <strong>{replaced.filename}</strong></> : 'Original photo'}
+                      {!replaced && p.illustrative && <span class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">AI placeholder: please replace with a real photo</span>}
+                    </p>
+                    <form method="post" action="/staff/api/photo-alt/" class="flex flex-wrap items-end gap-2">
+                      <input type="hidden" name="back" value={`/staff/#photo-${key}`} />
+                      <input type="hidden" name="key" value={key} />
+                      <label class="min-w-48 flex-1"><span class="staff-label text-sm">Description (alt text)</span>
+                        <input class="staff-input" name="alt" maxlength="250" value={photoAlt(key)} required />
+                      </label>
+                      <button class="staff-btn-quiet">Save</button>
+                    </form>
+                    <form method="post" action="/staff/api/photo-upload/" enctype="multipart/form-data" class="flex flex-wrap items-center gap-2">
+                      <input type="hidden" name="back" value={`/staff/#photo-${key}`} />
+                      <input type="hidden" name="key" value={key} />
+                      <label class="min-w-48 flex-1 text-sm"><span class="sr-only">New photo for {photoAlt(key)}</span>
+                        <input type="file" name="file" accept="image/jpeg,image/png,image/webp" required class="w-full text-sm" />
+                      </label>
+                      <button class="staff-btn"><Upload class="h-4 w-4" aria-hidden="true" />Replace</button>
+                    </form>
+                    {replaced && (
+                      <form method="post" action="/staff/api/photo-revert/">
+                        <input type="hidden" name="back" value={`/staff/#photo-${key}`} />
+                        <input type="hidden" name="key" value={key} />
+                        <button class="inline-flex items-center gap-1 text-sm text-brand-700 hover:underline"><RotateCcw class="h-4 w-4" aria-hidden="true" />Put the original back</button>
+                      </form>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        <!-- Documents -->
+        <section id="documents" class="scroll-mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm" aria-labelledby="documents-h">
+          <h2 id="documents-h" class="text-2xl font-bold">PDFs</h2>
+          <p class="mt-1 text-muted">Menus, calendars, packets, handbooks and board documents. Replacing a PDF keeps its web address, so every link to it (on the site, in emails, in Google) opens the new file.</p>
+          <div class="mt-5 space-y-4">
+            {docGroups.map((g) => (
+              <details class="rounded-xl border border-line">
+                <summary class="cursor-pointer px-4 py-3 text-lg font-semibold">{g.label} <span class="text-sm font-normal text-muted">({g.docs.length})</span></summary>
+                <ul class="divide-y divide-line border-t border-line">
+                  {g.docs.map((d) => {
+                    const replaced = store.documents[d.path];
+                    return (
+                      <li class="grid gap-2 px-4 py-3 md:grid-cols-[1fr_auto] md:items-center">
+                        <div>
+                          <a href={d.path} target="_blank" rel="noopener" class="font-medium text-brand-700 hover:underline">{d.title}<span class="sr-only"> (opens in a new tab)</span></a>
+                          <span class="block text-sm text-muted">
+                            {replaced
+                              ? `Replaced ${when(replaced.updatedAt)} · ${replaced.filename} · ${formatBytes(replaced.size)}${replaced.pages ? ` · ${replaced.pages} pages` : ''}`
+                              : `Original${d.bytes ? ` · ${formatBytes(d.bytes)}` : ''}`}
+                          </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3">
+                          <form method="post" action="/staff/api/document-upload/" enctype="multipart/form-data" class="flex items-center gap-2">
+                            <input type="hidden" name="back" value="/staff/#documents" />
+                            <input type="hidden" name="path" value={d.path} />
+                            <label class="text-sm"><span class="sr-only">New PDF for {d.title}</span>
+                              <input type="file" name="file" accept="application/pdf" required class="max-w-56 text-sm" />
+                            </label>
+                            <button class="staff-btn-quiet"><Upload class="h-4 w-4" aria-hidden="true" />Replace</button>
+                          </form>
+                          {replaced && (
+                            <form method="post" action="/staff/api/document-revert/">
+                              <input type="hidden" name="back" value="/staff/#documents" />
+                              <input type="hidden" name="path" value={d.path} />
+                              <button class="inline-flex items-center gap-1 text-sm text-brand-700 hover:underline"><RotateCcw class="h-4 w-4" aria-hidden="true" />Original</button>
+                            </form>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </details>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  )}
+</StaffLayout>

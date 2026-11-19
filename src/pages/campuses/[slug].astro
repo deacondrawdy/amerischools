@@ -14,11 +14,9 @@ import type { PhotoKey } from '../../data/photos';
 import { findCampusLink, mealMenuLinks } from '../../data/legacy';
 import { noWidow } from '../../lib/text';
 
-export function getStaticPaths() {
-  return campuses.map((campus) => ({ params: { slug: campus.slug }, props: { campus } }));
-}
-
-const { campus } = Astro.props as { campus: Campus };
+const found = campuses.find((c) => c.slug === Astro.params.slug);
+if (!found) return Astro.rewrite('/404/');
+const campus: Campus = found;
 const base = `/campuses/${campus.slug}`;
 const performanceUrl = findCampusLink(campus.slug, /school performance/i) ?? site.performanceUrl;
 
